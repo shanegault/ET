@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ET | Emotional Taxonomy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&display=swap" rel="stylesheet">
+  <style>
+/* ═══════════════════════════════════════════════════════════
+   PHASE 1: CORE STYLES
+   ═══════════════════════════════════════════════════════════ */
+:root {
+  --bg:#0a0a0f; --bg2:#121218; --card:rgba(255,255,255,0.05); --card-h:rgba(255,255,255,0.08);
+  --text:#fff; --text2:rgba(255,255,255,0.6); --muted:rgba(255,255,255,0.35); --border:rgba(255,255,255,0.08);
+  --em-c:#7B5BBF; --em-l:#9B7BDF; --em-g:rgba(123,91,191,0.4);
+  --font-d:'Fraunces',serif; --font-b:'Outfit',sans-serif; --r:20px;
+  --screen-transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+body{font-family:var(--font-b);background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh;min-height:100dvh;overflow-x:hidden}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+textarea,input{font-family:inherit;border:none;background:none;color:inherit;outline:none}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.15);border-radius:2px}
+
+@keyframes float{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(30px,-30px) scale(1.1)}66%{transform:translate(-20px,20px) scale(0.9)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes pulse{0%,100%{opacity:0.6}50%{opacity:1}}
+@keyframes scaleIn{from{transform:scale(0.95);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes breatheCircle{0%{transform:scale(0.5);opacity:0.6}50%{transform:scale(1);opacity:1}100%{transform:scale(0.5);opacity:0.6}}
+@keyframes slideUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes boxTrack{0%{top:-7px;left:-7px}25%{top:-7px;left:calc(100% - 7px)}50%{top:calc(100% - 7px);left:calc(100% - 7px)}75%{top:calc(100% - 7px);left:-7px}100%{top:-7px;left:-7px}}
+@keyframes check{from{stroke-dashoffset:20}to{stroke-dashoffset:0}}
+
+.app{position:relative;min-height:100vh;min-height:100dvh}
+.orbs{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.orb{position:absolute;border-radius:50%;filter:blur(100px);animation:float 25s ease-in-out infinite;transition:all 2s ease-in-out}
+.orb-1{width:500px;height:500px;top:-150px;left:-100px;background:linear-gradient(135deg,#FF6B6B,#FF8E53);opacity:0.15;transition:background 1.8s ease-in-out,opacity 1.8s ease-in-out}
+.orb-2{width:400px;height:400px;top:40%;right:-100px;background:linear-gradient(135deg,#4ECDC4,#44A3AA);opacity:0.12;animation-delay:-9s;transition:background 1.8s ease-in-out,opacity 1.8s ease-in-out}
+.orb-3{width:450px;height:450px;bottom:-100px;left:30%;background:linear-gradient(135deg,#A78BFA,#8B5CF6);opacity:0.13;animation-delay:-17s;transition:background 1.8s ease-in-out,opacity 1.8s ease-in-out}
+
+/* Header */
+.header{display:flex;justify-content:space-between;align-items:center;padding:16px 20px 24px;position:sticky;top:0;z-index:100;background:linear-gradient(to bottom,var(--bg) 60%,transparent)}
+.logo{display:flex;align-items:center;gap:12px;cursor:pointer;transition:opacity 0.15s}.logo:hover{opacity:0.8}
+.logo svg{width:40px;height:40px;flex-shrink:0}
+.logo-txt{display:flex;flex-direction:column}
+.logo-t{font-family:var(--font-b);font-size:0.9375rem;font-weight:700;line-height:1.2;letter-spacing:-0.02em}
+.logo-s{font-size:0.6875rem;color:var(--muted);font-weight:400;margin-top:1px}
+.mode-tog{display:flex;align-items:center;gap:8px;padding:6px 14px;background:var(--card);border-radius:100px;border:1px solid var(--border);font-size:0.75rem;color:var(--text2);transition:all 0.2s;font-weight:500}
+.mode-tog:hover{background:var(--card-h)}
+.mode-trk{width:36px;height:20px;background:rgba(255,255,255,0.12);border-radius:10px;position:relative;transition:background 0.3s}
+.mode-tog.kids .mode-trk{background:linear-gradient(135deg,#9B5DE5,#F15BB5)}
+.mode-th{width:16px;height:16px;background:#fff;border-radius:50%;position:absolute;top:2px;left:2px;transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);box-shadow:0 2px 4px rgba(0,0,0,0.3)}
+.mode-tog.kids .mode-th{transform:translateX(16px)}
+
+/* Screens */
+.screen{display:none;min-height:100vh;min-height:100dvh;position:relative;z-index:1}
+.screen.active{display:block;animation:fadeIn 0.3s ease-out}
+.container{max-width:560px;margin:0 auto;padding:0 20px 140px}
+
+/* Typography */
+.t-xl{font-family:var(--font-d);font-size:clamp(2.25rem,8vw,3rem);font-weight:700;line-height:1.1;letter-spacing:-0.03em}
+.t-md{font-family:var(--font-d);font-size:1.25rem;font-weight:600}
+.sub{font-size:1rem;color:var(--text2);font-weight:300;line-height:1.5}
+
+/* Symptom Selector */
+.sym-h{display:flex;align-items:center;gap:10px;margin:28px 0 12px}
+.sym-bar{width:3px;height:20px;border-radius:2px}
+.sym-bar.body{background:#FF6B6B}.sym-bar.mind{background:#4ECDC4}.sym-bar.beh{background:#A78BFA}
+.sym-l{font-size:0.75rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted)}
+.sym-grid{display:flex;flex-wrap:wrap;gap:8px}
+.sym-pill{padding:10px 16px;font-size:0.875rem;font-weight:500;border-radius:100px;background:var(--card);color:var(--text2);border:1px solid var(--border);transition:all 0.2s;user-select:none;-webkit-tap-highlight-color:transparent}
+.sym-pill:hover{background:var(--card-h);color:var(--text)}
+.sym-pill.sel{background:rgba(255,255,255,0.95);color:#0a0a0f;border-color:rgba(255,255,255,0.9);font-weight:600;box-shadow:0 4px 20px rgba(255,255,255,0.15)}
+
+/* Fixed Bottom Bar */
+.fix-b{position:fixed;bottom:0;left:0;right:0;padding:24px 20px;background:linear-gradient(to top,var(--bg) 70%,transparent);z-index:50;pointer-events:none}
+.fix-b .container{padding:0;pointer-events:auto}
+.btn{width:100%;padding:16px;font-size:0.9375rem;font-weight:600;border-radius:14px;transition:all 0.3s;text-align:center;display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:-0.01em}
+.btn-p{background:#fff;color:#0a0a0f;box-shadow:0 8px 30px rgba(255,255,255,0.08)}
+.btn-p:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 12px 40px rgba(255,255,255,0.15)}
+.btn-p:disabled{background:rgba(255,255,255,0.08);color:var(--muted);box-shadow:none}
+.btn-s{background:var(--card);color:var(--text2);border:1px solid var(--border)}
+.btn-s:hover{background:var(--card-h);color:var(--text)}
+.btn-em{background:var(--em-c);color:#fff;box-shadow:0 8px 30px var(--em-g)}
+.btn-em:hover{filter:brightness(1.1);transform:translateY(-2px)}
+
+/* Emotion Reveal */
+.reveal-wrap{text-align:center;padding-top:32px}
+.em-name{font-family:var(--font-d);font-size:clamp(3rem,12vw,4.5rem);font-weight:700;line-height:1;letter-spacing:-0.03em;animation:fadeUp 0.5s ease-out;text-shadow:0 0 60px var(--em-g)}
+.em-tag{font-size:1.125rem;color:var(--text2);font-style:italic;margin:12px 0 40px;animation:fadeUp 0.5s ease-out 0.1s both}
+.em-why{font-size:0.9375rem;color:var(--text2);max-width:360px;margin:0 auto 40px;line-height:1.6;animation:fadeUp 0.5s ease-out 0.15s both}
+.int-opts{display:flex;gap:10px;animation:fadeUp 0.5s ease-out 0.2s both}
+.int-btn{flex:1;padding:16px 12px;border-radius:14px;background:var(--card);border:1px solid var(--border);text-align:center;transition:all 0.2s;display:flex;flex-direction:column;align-items:center;gap:4px}
+.int-btn:hover{background:var(--card-h)}
+.int-btn.sel{background:var(--em-c);border-color:var(--em-l);box-shadow:0 8px 32px var(--em-g);color:#fff}
+.int-label{font-weight:600;font-size:0.9375rem}.int-dots{font-size:0.75rem;opacity:0.5}
+.back-link{color:var(--muted);font-size:0.8125rem;margin-bottom:16px;display:inline-flex;align-items:center;gap:6px;transition:color 0.15s;font-weight:500}
+.back-link:hover{color:var(--text)}
+
+/* Results Page */
+.res-header{margin-bottom:28px}
+.res-em{font-family:var(--font-d);font-size:clamp(2rem,8vw,2.75rem);font-weight:700;line-height:1.1;letter-spacing:-0.02em}
+.res-tag{color:var(--text2);font-size:0.9375rem;margin-top:6px}
+.sec-box{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:20px;padding:20px;margin-bottom:16px}
+.sec-t{font-family:var(--font-d);font-size:1.1rem;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.sec-icon{font-size:1rem;opacity:0.7}
+.cause-l{list-style:none;display:flex;flex-direction:column;gap:8px}
+.cause-l li{display:flex;gap:10px;color:var(--text2);font-size:0.875rem;line-height:1.5}
+.cause-dot{width:5px;height:5px;border-radius:50%;background:var(--em-c);margin-top:8px;flex-shrink:0}
+.tool-list{display:flex;flex-direction:column;gap:8px}
+.tool-c{background:rgba(0,0,0,0.2);border:1px solid var(--border);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:14px;text-align:left;transition:all 0.2s;-webkit-tap-highlight-color:transparent}
+.tool-c:hover{background:rgba(255,255,255,0.05);border-color:rgba(255,255,255,0.12)}
+.tool-c:active{transform:scale(0.98)}
+.tool-i{width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.tool-info{flex:1;min-width:0}
+.tool-n{font-weight:600;font-size:0.875rem;display:block;margin-bottom:1px}
+.tool-d{font-size:0.75rem;color:var(--muted);display:block;line-height:1.4}
+.tool-arrow{color:var(--muted);font-size:0.75rem;flex-shrink:0}
+
+/* Modal */
+.modal-o{position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);z-index:200;display:none;align-items:flex-end;justify-content:center;padding:0;opacity:0;transition:opacity 0.3s}
+.modal-o.active{display:flex;opacity:1}
+.modal{background:#111114;border:1px solid rgba(255,255,255,0.08);border-bottom:none;border-radius:24px 24px 0 0;width:100%;max-width:560px;max-height:92vh;max-height:92dvh;overflow-y:auto;position:relative;animation:slideUp 0.3s ease-out}
+.modal-h{padding:16px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(17,17,20,0.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:10;border-radius:24px 24px 0 0}
+.modal-x{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:0.875rem;transition:background 0.15s}
+.modal-x:hover{background:rgba(255,255,255,0.15)}
+.modal-b{padding:24px 20px 40px;min-height:300px}
+
+/* Tool Modal Components */
+.tool-step{text-align:center;animation:fadeUp 0.3s ease-out}
+.tool-title{font-family:var(--font-d);font-size:1.5rem;font-weight:600;margin-bottom:8px}
+.tool-sub{color:var(--text2);font-size:0.9375rem;margin-bottom:24px;line-height:1.5}
+.tool-prompt{font-family:var(--font-d);font-size:1.25rem;line-height:1.4;margin-bottom:20px;font-weight:600}
+.tool-input{width:100%;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:14px;padding:14px 16px;color:#fff;font-size:0.9375rem;min-height:80px;resize:none;transition:border-color 0.2s;line-height:1.5}
+.tool-input:focus{border-color:var(--em-c)}
+.tool-progress{display:flex;gap:6px;justify-content:center;margin-bottom:24px}
+.tool-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.12);transition:all 0.3s}
+.tool-dot.active{background:var(--em-c);transform:scale(1.2)}
+.tool-dot.done{background:rgba(255,255,255,0.4)}
+.tool-nav{display:flex;gap:10px;margin-top:24px}
+.tool-nav .btn{flex:1}
+
+/* Breathing */
+.breath-circle-wrap{position:relative;width:200px;height:200px;margin:32px auto}
+.breath-circle{width:100%;height:100%;border-radius:50%;border:2px solid rgba(255,255,255,0.1);position:relative;display:flex;align-items:center;justify-content:center}
+.breath-fill{position:absolute;inset:8px;border-radius:50%;background:radial-gradient(circle,var(--em-c),transparent);opacity:0.3;transition:transform 1s ease-in-out,opacity 1s ease-in-out;transform:scale(0.3)}
+.breath-fill.expand{transform:scale(1);opacity:0.5}
+.breath-text{font-family:var(--font-d);font-size:1.75rem;font-weight:600;z-index:1;transition:opacity 0.3s}
+.breath-counter{text-align:center;color:var(--muted);font-size:0.8125rem;margin-top:12px}
+
+/* Box Breathing */
+.box-container{width:200px;height:200px;position:relative;margin:32px auto}
+.box-border{width:100%;height:100%;border:2px solid rgba(255,255,255,0.1);border-radius:4px;position:relative}
+.box-dot{position:absolute;width:14px;height:14px;background:var(--em-c);border-radius:50%;box-shadow:0 0 20px var(--em-c),0 0 6px #fff;top:-7px;left:-7px;opacity:0}
+.box-dot.active{opacity:1;animation:boxTrack 16s linear infinite}
+.box-side-label{position:absolute;font-size:0.6875rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);font-weight:600}
+.box-label-top{top:-22px;left:50%;transform:translateX(-50%)}
+.box-label-right{right:-32px;top:50%;transform:translateY(-50%) rotate(90deg)}
+.box-label-bottom{bottom:-22px;left:50%;transform:translateX(-50%)}
+.box-label-left{left:-32px;top:50%;transform:translateY(-50%) rotate(-90deg)}
+.box-center-text{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:1.75rem;font-weight:600}
+
+/* Grounding */
+.ground-step{text-align:center;animation:scaleIn 0.3s ease-out}
+.ground-num{font-family:var(--font-d);font-size:4rem;font-weight:700;opacity:0.15;line-height:1}
+.ground-sense{font-size:1.125rem;font-weight:600;margin:8px 0 4px}
+.ground-prompt{color:var(--text2);font-size:0.875rem;margin-bottom:20px}
+.ground-items{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.ground-item{padding:10px 18px;border-radius:100px;background:var(--card);border:1px solid var(--border);font-size:0.875rem;color:var(--text2);transition:all 0.2s}
+.ground-item.checked{background:var(--em-c);color:#fff;border-color:var(--em-c)}
+
+/* PMR */
+.pmr-body{font-size:3rem;text-align:center;margin:16px 0;line-height:1.6}
+.pmr-instruction{font-family:var(--font-d);font-size:1.5rem;text-align:center;font-weight:600}
+.pmr-timer{font-size:3rem;text-align:center;font-family:var(--font-d);font-weight:700;color:var(--em-c);margin:16px 0}
+.pmr-progress{height:4px;background:rgba(255,255,255,0.08);border-radius:2px;margin:20px 0;overflow:hidden}
+.pmr-progress-fill{height:100%;background:var(--em-c);border-radius:2px;transition:width 0.3s}
+
+/* TIPP */
+.tipp-cards{display:flex;flex-direction:column;gap:10px}
+.tipp-card{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:left;transition:all 0.2s}
+.tipp-card:hover{background:rgba(255,255,255,0.06)}
+.tipp-card.expanded{background:rgba(255,255,255,0.06);border-color:var(--em-c)}
+.tipp-header{display:flex;align-items:center;gap:12px}
+.tipp-icon{font-size:1.25rem;width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.06);border-radius:10px;flex-shrink:0}
+.tipp-name{font-weight:600;font-size:0.9375rem}
+.tipp-detail{margin-top:12px;padding-top:12px;border-top:1px solid var(--border);color:var(--text2);font-size:0.8125rem;line-height:1.6;display:none}
+.tipp-card.expanded .tipp-detail{display:block;animation:fadeUp 0.2s ease-out}
+
+/* Reframe Steps */
+.reframe-label{font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;font-weight:600;margin-bottom:8px}
+
+/* Self-Compassion */
+.sc-step{text-align:center;padding:20px 0}
+.sc-icon{font-size:2.5rem;margin-bottom:16px}
+.sc-phrase{font-family:var(--font-d);font-size:1.375rem;line-height:1.4;margin-bottom:12px;font-weight:600}
+.sc-explain{color:var(--text2);font-size:0.875rem;line-height:1.6;max-width:320px;margin:0 auto}
+
+/* Opposite Action */
+.oa-card{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:12px;text-align:center}
+.oa-label{font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;font-weight:600;margin-bottom:8px}
+.oa-text{font-family:var(--font-d);font-size:1.25rem;font-weight:600}
+.oa-arrow{font-size:1.5rem;color:var(--em-c);margin:8px 0}
+
+/* Completion */
+.complete-wrap{text-align:center;padding:40px 0;animation:scaleIn 0.4s ease-out}
+.complete-check{width:64px;height:64px;border-radius:50%;background:var(--em-c);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:1.5rem;box-shadow:0 8px 32px var(--em-g)}
+.complete-title{font-family:var(--font-d);font-size:1.5rem;font-weight:600;margin-bottom:8px}
+.complete-sub{color:var(--text2);font-size:0.9375rem}
+
+@media(max-width:480px){.container{padding:0 16px 140px}.header{padding:12px 16px 20px}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <div class="orbs" id="orbs"><div class="orb orb-1" id="orb1"></div><div class="orb orb-2" id="orb2"></div><div class="orb orb-3" id="orb3"></div></div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PHASE 2: HTML STRUCTURE
+     ═══════════════════════════════════════════════════════════ -->
+  <header class="header">
+    <div class="logo" onclick="goHome()">
+      <svg viewBox="0 0 448.2 450.73"><path fill="#fff" d="M113.86,140.54h94.14c1.83,0,3.32,1.49,3.32,3.32v4.43c0,1.83-1.49,3.32-3.32,3.32h-81.29c-1.83,0-3.32,1.49-3.32,3.32v63.12c0,1.83,1.49,3.32,3.32,3.32h67.2c1.83,0,3.32,1.49,3.32,3.32v4.43c0,1.83-1.49,3.32-3.32,3.32h-67.2c-1.83,0-3.32,1.49-3.32,3.32v74.58c0,1.83,1.49,3.32,3.32,3.32h84.08c1.83,0,3.32,1.49,3.32,3.32v4.43c0,1.83-1.49,3.32-3.32,3.32h-96.94c-1.83,0-3.32-1.49-3.32-3.32v-177.54c0-1.83,1.49-3.32,3.32-3.32Z"/><path fill="#fff" d="M290.85,151.6h-52c-1.83,0-3.32-1.49-3.32-3.32v-4.43c0-1.83,1.49-3.32,3.32-3.32h123.49c1.83,0,3.32,1.49,3.32,3.32v4.43c0,1.83-1.49,3.32-3.32,3.32h-52c-1.83,0-3.32,1.49-3.32,3.32v166.48c0,1.83-1.49,3.32-3.32,3.32h-6.22c-1.83,0-3.32-1.49-3.32-3.32v-166.48c0-1.83-1.49-3.32-3.32-3.32Z"/><path fill="#fff" d="M448.2,226.63c0,7.64-.39,15.34-1.15,22.9-.76,7.45-1.9,14.93-3.4,22.25-1.48,7.22-3.34,14.45-5.52,21.48-2.17,6.96-4.71,13.89-7.54,20.6-2.81,6.65-5.99,13.24-9.44,19.59-3.43,6.31-7.21,12.53-11.23,18.48-4,5.93-8.34,11.73-12.9,17.25-4.54,5.51-9.41,10.86-14.46,15.91-5.04,5.05-10.4,9.91-15.9,14.46-5.52,4.56-11.33,8.9-17.25,12.9-5.95,4.02-12.17,7.8-18.48,11.22-6.35,3.45-12.94,6.63-19.59,9.44-6.72,2.84-13.65,5.38-20.6,7.54-7.03,2.19-14.26,4.05-21.49,5.52-7.31,1.5-14.8,2.65-22.25,3.4-7.55.77-15.25,1.16-22.9,1.16s-15.35-.39-22.9-1.16c-7.44-.75-14.93-1.9-22.25-3.4-7.22-1.47-14.45-3.33-21.48-5.52-6.96-2.16-13.89-4.7-20.6-7.54-6.65-2.81-13.24-5.99-19.59-9.44-6.32-3.43-12.53-7.2-18.48-11.22-5.93-4.01-11.73-8.35-17.25-12.9-5.51-4.55-10.86-9.41-15.91-14.46-5.05-5.05-9.91-10.4-14.46-15.91-4.55-5.51-8.89-11.31-12.9-17.25-4.02-5.95-7.8-12.17-11.22-18.47-3.45-6.36-6.63-12.95-9.44-19.6-2.84-6.71-5.38-13.64-7.54-20.6-2.19-7.02-4.04-14.25-5.52-21.48-1.5-7.32-2.64-14.8-3.4-22.25-.77-7.56-1.16-15.26-1.16-22.9s.39-15.34,1.16-22.9c.76-7.45,1.9-14.93,3.4-22.25,1.48-7.23,3.33-14.46,5.52-21.49,2.16-6.95,4.7-13.88,7.54-20.59,2.81-6.65,5.99-13.25,9.44-19.6,3.42-6.3,7.2-12.52,11.22-18.47,4.01-5.93,8.35-11.74,12.9-17.25s9.41-10.86,14.46-15.91c5.05-5.05,10.4-9.92,15.91-14.46,5.52-4.56,11.32-8.89,17.25-12.9,5.95-4.02,12.16-7.8,18.48-11.23,6.35-3.45,12.94-6.62,19.59-9.43,5.25-2.22,10.63-4.25,16.05-6.07,1.37-.46,2.18-1.85,1.89-3.26l-1.54-7.4c-.44-2.14,1.59-3.95,3.66-3.27l40.78,13.45c2.07.68,2.63,3.35,1,4.81l-32.04,28.59c-1.63,1.45-4.22.6-4.66-1.54l-1.32-6.35c-.35-1.69-2.11-2.67-3.74-2.09-3.75,1.33-7.47,2.77-11.12,4.32-5.96,2.52-11.88,5.37-17.58,8.47-5.66,3.07-11.24,6.46-16.57,10.07-5.33,3.59-10.54,7.49-15.49,11.58-4.95,4.08-9.75,8.45-14.29,12.98-4.53,4.54-8.9,9.34-12.98,14.29-4.09,4.95-7.98,10.16-11.58,15.48-3.61,5.35-7,10.93-10.07,16.58-3.1,5.7-5.95,11.61-8.47,17.58-2.54,6.01-4.82,12.23-6.76,18.46-1.96,6.31-3.62,12.79-4.95,19.27-1.34,6.56-2.37,13.28-3.05,19.96-.69,6.79-1.04,13.72-1.04,20.58s.35,13.78,1.04,20.57c.68,6.69,1.71,13.4,3.05,19.97,1.33,6.48,2.99,12.96,4.95,19.26,1.94,6.24,4.22,12.45,6.76,18.47,2.52,5.96,5.37,11.88,8.47,17.58,3.07,5.65,6.46,11.23,10.07,16.58,3.6,5.32,7.5,10.53,11.58,15.48s8.45,9.75,12.98,14.29c4.54,4.53,9.34,8.9,14.29,12.98,4.95,4.09,10.16,7.98,15.48,11.58,5.34,3.61,10.92,7,16.58,10.07,5.7,3.1,11.62,5.95,17.58,8.47,6.02,2.55,12.23,4.82,18.47,6.76,6.31,1.96,12.79,3.63,19.26,4.95,6.57,1.35,13.28,2.37,19.97,3.05,13.56,1.38,27.59,1.38,41.15,0,6.68-.68,13.4-1.7,19.96-3.05,6.48-1.32,12.96-2.99,19.27-4.95,6.23-1.94,12.44-4.21,18.47-6.76,5.96-2.52,11.87-5.37,17.57-8.47,5.66-3.07,11.24-6.46,16.58-10.07,5.32-3.59,10.53-7.49,15.48-11.58,4.95-4.08,9.76-8.45,14.29-12.98,4.53-4.54,8.9-9.34,12.99-14.29,4.09-4.96,7.98-10.16,11.57-15.48,3.61-5.35,7-10.93,10.08-16.58,3.09-5.7,5.94-11.62,8.46-17.58,2.55-6.01,4.82-12.23,6.76-18.47,1.96-6.3,3.63-12.78,4.96-19.26,1.34-6.57,2.36-13.28,3.04-19.97.69-6.79,1.04-13.71,1.04-20.57s-.35-13.79-1.04-20.58c-.68-6.68-1.7-13.4-3.04-19.96-1.33-6.48-3-12.96-4.96-19.27-1.94-6.23-4.21-12.45-6.76-18.46-2.52-5.96-5.37-11.88-8.46-17.58-3.08-5.66-6.47-11.24-10.08-16.58-3.59-5.31-7.48-10.52-11.58-15.48-4.08-4.95-8.45-9.76-12.98-14.29-4.53-4.53-9.34-8.9-14.29-12.98-4.95-4.09-10.16-7.99-15.48-11.58-5.34-3.61-10.92-7-16.58-10.07-5.7-3.1-11.61-5.95-17.57-8.47-6.03-2.55-12.24-4.82-18.47-6.76-6.31-1.96-12.79-3.63-19.27-4.95-6.56-1.35-13.28-2.37-19.96-3.05-5.86-.6-11.82-.94-17.77-1.02-1.56-.02-2.81-1.27-2.81-2.83V5.39c0-1.57,1.28-2.86,2.86-2.84,6.71.08,13.43.47,20.04,1.14,7.45.75,14.94,1.9,22.25,3.39,7.23,1.48,14.46,3.34,21.49,5.53,6.95,2.16,13.88,4.7,20.6,7.54,6.65,2.81,13.24,5.98,19.59,9.43,6.31,3.43,12.53,7.21,18.48,11.23,5.92,4,11.73,8.34,17.25,12.9,5.5,4.54,10.86,9.41,15.9,14.46,5.05,5.05,9.92,10.4,14.46,15.91,4.56,5.52,8.9,11.33,12.9,17.25,4.02,5.95,7.8,12.17,11.23,18.47,3.45,6.36,6.63,12.95,9.44,19.6,2.83,6.71,5.37,13.64,7.53,20.59,2.19,7.04,4.05,14.27,5.53,21.49,1.5,7.32,2.64,14.8,3.4,22.25.76,7.56,1.15,15.26,1.15,22.9Z"/></svg>
+      <div class="logo-txt"><div class="logo-t">Emotional Taxonomy</div><div class="logo-s">Break the feeling down. Build yourself back up.</div></div>
+    </div>
+    <div class="h-act">
+      <button class="mode-tog" id="modeTog"><span class="mode-l" id="modeL">Adult</span><div class="mode-trk"><div class="mode-th"></div></div></button>
+    </div>
+  </header>
+
+  <!-- SCREEN 1: Symptom Selection -->
+  <section class="screen active" id="startScr">
+    <div class="container">
+      <h1 class="t-xl" id="mainT">What are you experiencing?</h1>
+      <p class="sub" id="mainS" style="margin-top:8px">Select everything that resonates.</p>
+      <div class="sym-h"><div class="sym-bar body"></div><span class="sym-l" id="catBody">Body</span></div>
+      <div class="sym-grid" id="bodySym"></div>
+      <div class="sym-h"><div class="sym-bar mind"></div><span class="sym-l" id="catMind">Mind</span></div>
+      <div class="sym-grid" id="mindSym"></div>
+      <div class="sym-h"><div class="sym-bar beh"></div><span class="sym-l" id="catBeh">Actions</span></div>
+      <div class="sym-grid" id="behSym"></div>
+    </div>
+    <div class="fix-b"><div class="container"><button class="btn btn-p" id="contBtn" disabled>Continue</button></div></div>
+  </section>
+
+  <!-- SCREEN 2: Emotion Reveal + Intensity -->
+  <section class="screen" id="detScr">
+    <div class="container reveal-wrap">
+      <button class="back-link" onclick="goHome()">&#8592; Start over</button>
+      <h2 class="em-name" id="detEm"></h2>
+      <p class="em-tag" id="emTag"></p>
+      <p class="em-why" id="emWhy"></p>
+      <p class="sub" id="intLabel" style="margin-bottom:12px;font-size:0.875rem">How strong is this feeling?</p>
+      <div class="int-opts" id="intOpts">
+        <button class="int-btn" onclick="selInt('mild')"><span class="int-label" id="int1">Mild</span><span class="int-dots">&#183;</span></button>
+        <button class="int-btn" onclick="selInt('moderate')"><span class="int-label" id="int2">Moderate</span><span class="int-dots">&#183;&#183;</span></button>
+        <button class="int-btn" onclick="selInt('strong')"><span class="int-label" id="int3">Strong</span><span class="int-dots">&#183;&#183;&#183;</span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCREEN 3: Results + Tools -->
+  <section class="screen" id="resScr">
+    <div class="container">
+      <button class="back-link" onclick="goHome()">&#8592; Start over</button>
+      <div class="res-header">
+        <h1 class="res-em" id="resEm"></h1>
+        <p class="res-tag" id="resTag"></p>
+      </div>
+      <div class="sec-box" id="understandBox">
+        <h3 class="sec-t"><span class="sec-icon">&#128161;</span> <span id="whyT">Understanding This</span></h3>
+        <p id="whyText" style="color:var(--text2);font-size:0.875rem;line-height:1.6;margin-bottom:12px"></p>
+        <ul class="cause-l" id="causeL"></ul>
+      </div>
+      <div class="sec-box">
+        <h3 class="sec-t"><span class="sec-icon">&#9889;</span> <span id="quickT">Quick Relief</span></h3>
+        <div class="tool-list" id="quickL"></div>
+      </div>
+      <div class="sec-box">
+        <h3 class="sec-t"><span class="sec-icon">&#127793;</span> <span id="deepT">Deeper Strategies</span></h3>
+        <div class="tool-list" id="deepL"></div>
+      </div>
+      <div style="height:60px"></div>
+    </div>
+    <div class="fix-b"><div class="container"><button class="btn btn-p" onclick="goHome()" id="newBtn">Start New Session</button></div></div>
+  </section>
+
+  <!-- Tool Modal -->
+  <div class="modal-o" id="toolModal">
+    <div class="modal">
+      <div class="modal-h">
+        <h3 class="t-md" id="toolName">Tool</h3>
+        <button class="modal-x" onclick="closeTool()">&#10005;</button>
+      </div>
+      <div class="modal-b" id="toolContent"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   BUILD MANIFEST — Use this to resume if session breaks
+   ═══════════════════════════════════════════════════════════
+   PHASE 1: Core Styles ..................... ✅ Complete
+   PHASE 2: HTML Structure ................. ✅ Complete
+   PHASE 3: Emotion Database (24 states) ... ✅ Complete
+   PHASE 4: Symptom Matrix (52 symptoms) ... ✅ Complete
+   PHASE 5: Tool Definitions & Mapping ..... ✅ Complete
+   PHASE 6: Scoring Engine & Navigation .... ✅ Complete
+   PHASE 7: Interactive Tool Modals (14) ... ✅ Complete
+   ═══════════════════════════════════════════════════════════ */
+
+// ═══════════════════════════════════════════════════════════
+// PHASE 3: EMOTION DATABASE
+// ═══════════════════════════════════════════════════════════
+const EMOTIONS = {
+  anger: {
+    color:'#D62828',
+    adult:{ name:'Anger', tag:'A signal that boundaries have been crossed.', why:'Your nervous system is mobilising energy to defend something that matters to you — a value, a need, a boundary. This is one of the most powerful emotions and it exists for a reason.', causes:['Injustice or unfairness','Feeling disrespected','Boundaries being violated','Goals being blocked by others','Accumulated frustration'] },
+    kid:{ name:'Mad', tag:'Like a volcano bubbling inside.', why:'Your body fills up with big energy because something feels really unfair or someone crossed your line.', causes:['Someone was mean or unfair','Rules got broken','Nobody is listening','I can\'t do what I want','Someone took my thing'] },
+    quick:['boxBreathing','pmr','tipp'], deep:['oppositeAction','reframe','valuesCompass']
+  },
+  frustration: {
+    color:'#E85D04',
+    adult:{ name:'Frustration', tag:'Energy with nowhere to go.', why:'You\'re expending effort toward a goal but something keeps blocking progress. The agitation you feel is energy that has accumulated without a release channel.', causes:['Repeated obstacles','Inefficiency or wasted effort','Unmet expectations','Feeling stuck','Communication breakdowns'] },
+    kid:{ name:'Stuck', tag:'I keep trying but it won\'t work!', why:'You want to do something SO badly but it\'s just not working and that makes your whole body feel tight and grumpy.', causes:['It\'s too hard','I keep getting it wrong','Waiting too long','Nobody will help me','The rules don\'t make sense'] },
+    quick:['pmr','boxBreathing','grounding54321'], deep:['reframe','activation','valuesCompass']
+  },
+  fear: {
+    color:'#7B2D8E',
+    adult:{ name:'Fear', tag:'Your survival system, activated.', why:'Your brain has detected an immediate threat and triggered the fight-flight-freeze response. Blood flows to your limbs, pupils dilate, and non-essential systems shut down. This kept your ancestors alive.', causes:['Perceived physical danger','Threatening situations','Past trauma being triggered','Loss of safety','Confrontation or conflict'] },
+    kid:{ name:'Scared', tag:'I need to be safe right now.', why:'Your body has a super fast alarm system. When it senses danger, it gets you ready to run, fight, or freeze — like a superhero power that keeps you safe.', causes:['Something scary happened','Loud unexpected noises','Being in the dark alone','Scary stories or images','Someone acting threatening'] },
+    quick:['grounding54321','breathing478','tipp'], deep:['oppositeAction','reframe','defusion']
+  },
+  anxiety: {
+    color:'#5A189A',
+    adult:{ name:'Anxiety', tag:'The mind racing ahead of reality.', why:'Your threat-detection system is scanning for future dangers. Unlike fear (which responds to present threats), anxiety is your brain running simulations of what could go wrong — a useful function that has gone into overdrive.', causes:['Uncertainty about the future','High-stakes situations','Lack of control','Social evaluation','Information overload'] },
+    kid:{ name:'Worry', tag:'My brain keeps asking "what if?"', why:'Your brain is like a really eager guard dog — it\'s trying to protect you by thinking about all the bad things that MIGHT happen. But sometimes it barks at shadows.', causes:['Not knowing what\'s going to happen','A test or performance coming up','Starting something new','Scary thoughts that keep coming back','Too many things to think about'] },
+    quick:['boxBreathing','grounding54321','breathing478'], deep:['defusion','reframe','selfCompassion']
+  },
+  sadness: {
+    color:'#0077B6',
+    adult:{ name:'Sadness', tag:'The weight of what matters.', why:'Sadness slows you down so you can process loss or disappointment. It signals to others that you need support and gives your mind time to adjust to a new reality. It is not weakness — it is recalibration.', causes:['Loss or disappointment','Rejection or exclusion','Failed expectations','Missing someone','Witnessing suffering'] },
+    kid:{ name:'Blue', tag:'I feel like a rainy day inside.', why:'When something sad happens, your body slows right down. It\'s like your heart needs a rest so it can heal. Everyone feels blue sometimes.', causes:['Missing someone I love','Losing something special','Being left out','Something didn\'t go how I wanted','A friend moved away'] },
+    quick:['selfCompassion','activation','breathing478'], deep:['oppositeAction','valuesCompass','gratitude']
+  },
+  grief: {
+    color:'#023E8A',
+    adult:{ name:'Grief', tag:'Love with nowhere to land.', why:'Grief is the natural response to deep loss. It comes in waves — not stages — and encompasses anger, sadness, bargaining, and numbness. It is the price we pay for having loved deeply.', causes:['Death of someone close','End of a significant relationship','Loss of identity or role','Loss of health or ability','Major life transitions'] },
+    kid:{ name:'Missing', tag:'My heart hurts because someone is gone.', why:'When someone or something we really love goes away, our heart feels like it has a hole in it. The hurt is big because the love was big.', causes:['Someone I love died','My pet is gone','My parents split up','My best friend left','Things changed and I want them back'] },
+    quick:['selfCompassion','grounding54321','breathing478'], deep:['valuesCompass','savoring','defusion']
+  },
+  shame: {
+    color:'#4A4E69',
+    adult:{ name:'Shame', tag:'The painful belief of being flawed.', why:'Shame tells you "I am bad" (distinct from guilt\'s "I did bad"). It evolved as a social mechanism to prevent exclusion from the group. But it often fires when it shouldn\'t — amplifying mistakes into identity crises.', causes:['Public failure or humiliation','Feeling exposed or judged','Not meeting your own standards','Childhood conditioning','Social rejection'] },
+    kid:{ name:'The Hiding Feeling', tag:'I want to curl up really small.', why:'Sometimes our brain tells us we ARE a mistake instead of that we MADE a mistake. That\'s when you want to hide from everyone. But here\'s the secret: everyone feels this way sometimes.', causes:['I made a mistake in front of people','Someone laughed at me','I feel different from everyone','I broke something important','I feel like I\'m not good enough'] },
+    quick:['selfCompassion','grounding54321','defusion'], deep:['reframe','oppositeAction','valuesCompass']
+  },
+  guilt: {
+    color:'#6C584C',
+    adult:{ name:'Guilt', tag:'The conscience signalling repair.', why:'Guilt says "I did something bad" — it is about behaviour, not identity. Healthy guilt is a moral compass that motivates repair and changed behaviour. Unhealthy guilt persists long after it has served its purpose.', causes:['Hurting someone you care about','Breaking a personal value','Not meeting responsibilities','Saying something you regret','Inaction when action was needed'] },
+    kid:{ name:'Uh-Oh Feeling', tag:'My tummy feels bad about what I did.', why:'The uh-oh feeling is actually really useful! It\'s your conscience — the little voice that helps you know right from wrong. It wants you to make things better.', causes:['I said something mean','I broke a rule on purpose','I didn\'t tell the truth','I forgot something important','I hurt someone\'s feelings'] },
+    quick:['selfCompassion','breathing478','grounding54321'], deep:['reframe','oppositeAction','valuesCompass']
+  },
+  embarrassment: {
+    color:'#E76F51',
+    adult:{ name:'Embarrassment', tag:'The spotlight you didn\'t ask for.', why:'Embarrassment is a brief, self-conscious response to an unintentional social violation. Unlike shame, it\'s typically about a specific moment and fades naturally. Your blushing actually signals to others that you recognise the social norm.', causes:['Public mistake or blunder','Unexpected attention','Social faux pas','Being singled out','Physical exposure'] },
+    kid:{ name:'Red Face', tag:'I wish I could disappear!', why:'When something awkward happens and everyone sees it, your face goes hot and red. It\'s actually your body\'s way of saying "oops, I know that was silly!" — and that\'s OK.', causes:['I tripped in front of everyone','I said something silly','My body made a weird noise','Teacher called on me and I didn\'t know','Someone saw something private'] },
+    quick:['grounding54321','selfCompassion','boxBreathing'], deep:['reframe','defusion','selfCompassion']
+  },
+  disgust: {
+    color:'#606C38',
+    adult:{ name:'Disgust', tag:'The rejection reflex.', why:'Originally evolved to protect you from contaminated food and disease, disgust has expanded to include moral violations and social transgressions. It creates a strong avoidance impulse designed to keep you safe.', causes:['Witnessing moral violations','Contamination or uncleanliness','Violation of personal standards','Toxic behaviour from others','Sensory overwhelm (bad smells, sights)'] },
+    kid:{ name:'Yuck', tag:'I want to get away from that!', why:'The yuck feeling started as your body\'s way of keeping you away from things that could make you sick. Now it also happens when something feels really wrong or gross.', causes:['Something smells or looks bad','Someone did something really wrong','Food I don\'t like','Seeing something icky','Someone was cruel to someone else'] },
+    quick:['grounding54321','boxBreathing','breathing478'], deep:['reframe','valuesCompass','oppositeAction']
+  },
+  loneliness: {
+    color:'#6C757D',
+    adult:{ name:'Loneliness', tag:'A hunger for connection.', why:'Loneliness is a biological alarm that signals unmet social needs — as fundamental as hunger signals unmet nutritional needs. Evolutionarily, isolation from the group meant danger. The pain you feel is your brain urging reconnection.', causes:['Physical isolation','Feeling misunderstood','Lack of deep connection','Social exclusion','Life transitions disrupting community'] },
+    kid:{ name:'Lonely', tag:'I wish someone would play with me.', why:'Humans are like pack animals — we need our people! When you feel lonely, your brain is saying "hey, I need a friend right now." That\'s totally normal and nothing to be ashamed of.', causes:['No one to play with','Feeling different from other kids','Missing my family','New school or neighbourhood','Friends are busy without me'] },
+    quick:['selfCompassion','activation','grounding54321'], deep:['oppositeAction','valuesCompass','gratitude']
+  },
+  overwhelm: {
+    color:'#9E2A2B',
+    adult:{ name:'Overwhelm', tag:'When demands exceed capacity.', why:'Your cognitive load has exceeded your processing bandwidth. Too many inputs, too many decisions, too many demands — your brain is signalling that it needs to reduce input before it can function effectively again.', causes:['Too many competing priorities','Information overload','Emotional accumulation','Sensory overstimulation','Lack of recovery time'] },
+    kid:{ name:'Too Much!', tag:'My bucket is overflowing!', why:'Imagine your brain is a cup. When too many things get poured in at once — homework, noise, feelings, rules — the cup overflows and everything feels impossible.', causes:['Too much homework at once','Everything is loud and busy','Too many feelings at the same time','I don\'t know where to start','Everyone wants something from me'] },
+    quick:['tipp','boxBreathing','grounding54321'], deep:['activation','valuesCompass','defusion']
+  },
+  boredom: {
+    color:'#8D99AE',
+    adult:{ name:'Boredom', tag:'A signal seeking meaning.', why:'Boredom is not laziness — it\'s a sophisticated signal that your current activity lacks sufficient challenge, novelty, or meaning for your cognitive needs. It\'s actually a motivational state pushing you toward more engaging pursuits.', causes:['Under-stimulation','Lack of purpose or meaning','Repetitive routines','Mismatched skills and challenge','Disconnection from values'] },
+    kid:{ name:'Bored', tag:'There\'s NOTHING to do!', why:'When your brain says "I\'m bored," it\'s actually asking for an adventure! It wants something interesting to think about or do. Boredom is your brain\'s way of asking for something better.', causes:['Nothing interesting to do','Same old thing again','Waiting with nothing to play','Lesson is too easy','Friends aren\'t available'] },
+    quick:['activation','savoring','grounding54321'], deep:['valuesCompass','reframe','activation']
+  },
+  envy: {
+    color:'#2D6A4F',
+    adult:{ name:'Envy', tag:'Desire wearing someone else\'s face.', why:'Envy reveals what you genuinely value by pointing at what others have that you want. Rather than being purely destructive, it can be informational — showing you your unmet needs and aspirations.', causes:['Others achieving what you want','Social comparison','Perceived unfairness in outcomes','Unmet personal aspirations','Social media exposure'] },
+    kid:{ name:'Not Fair Feeling', tag:'How come THEY get that and I don\'t?', why:'When someone has something you really want — a toy, a talent, attention — it can make your tummy twist up. This feeling is trying to tell you what\'s important to you!', causes:['Friend got something cool','Someone is better at something','Sibling got more attention','Not picked for the team','Someone has more friends'] },
+    quick:['selfCompassion','gratitude','breathing478'], deep:['reframe','valuesCompass','gratitude']
+  },
+  confusion: {
+    color:'#7B6D8D',
+    adult:{ name:'Confusion', tag:'The space before understanding.', why:'Confusion means your brain is actively trying to integrate information that doesn\'t fit your current mental models. It\'s actually the precursor to learning — the discomfort of cognitive restructuring in progress.', causes:['Contradictory information','Ambiguous situations','Complex problems','Unexpected outcomes','Mixed signals from others'] },
+    kid:{ name:'Mixed Up', tag:'I don\'t get it and my brain feels tangled.', why:'Confusion means your brain is working really hard! It\'s like a puzzle that hasn\'t clicked into place yet. The tangled feeling is actually your brain building new connections.', causes:['Instructions don\'t make sense','Too many new things at once','People say different things','I don\'t understand the rules','Something unexpected happened'] },
+    quick:['grounding54321','boxBreathing','breathing478'], deep:['reframe','activation','valuesCompass']
+  },
+  surprise: {
+    color:'#F77F00',
+    adult:{ name:'Surprise', tag:'Reality breaking the script.', why:'Surprise is the briefest emotion — a momentary reset that occurs when reality violates your expectations. It clears your cognitive slate to rapidly process new information. What follows surprise (joy, fear, anger) tells you how you\'ve appraised the unexpected event.', causes:['Unexpected news','Sudden changes in environment','Plans being disrupted','Unanticipated outcomes','Breaking of routine'] },
+    kid:{ name:'Whoa!', tag:'I did NOT see that coming!', why:'When something happens that your brain totally didn\'t expect, it does a big "RESET!" — like pressing pause so it can figure out what just happened. Then another feeling usually comes right after.', causes:['A surprise party or gift','Something suddenly changed','A loud unexpected sound','Someone did something I didn\'t expect','I found out something new'] },
+    quick:['grounding54321','boxBreathing','breathing478'], deep:['reframe','savoring','defusion']
+  },
+  joy: {
+    color:'#FFD60A',
+    adult:{ name:'Joy', tag:'The body saying yes to life.', why:'Joy signals that things are going well — your needs are being met, you\'re making progress, or you\'re experiencing genuine connection. It broadens your thinking, builds psychological resources, and undoes the physical effects of stress.', causes:['Achievement or success','Genuine connection with others','Flow state in meaningful activity','Pleasant surprises','Sensory pleasure or beauty'] },
+    kid:{ name:'Happy', tag:'I feel like sunshine inside!', why:'When you feel happy, your body gets light and bouncy, and you want to smile and share it with everyone! Happy feelings are like sunshine — they make everything feel better and brighter.', causes:['Playing with friends','Getting something I wanted','Making someone proud','A fun surprise','Doing something I love'] },
+    quick:['savoring','gratitude','sharing'], deep:['savoring','valuesCompass','gratitude']
+  },
+  excitement: {
+    color:'#FF006E',
+    adult:{ name:'Excitement', tag:'Anticipation electrified.', why:'Excitement is high-arousal positive anticipation. Your dopamine system is activated in expectation of reward, energising you for action. It shares physiological signatures with anxiety (racing heart, butterflies) but is appraised as pleasurable.', causes:['Upcoming positive events','New opportunities','Creative breakthroughs','Adventure and novelty','Romantic anticipation'] },
+    kid:{ name:'Excited', tag:'I CAN\'T WAIT! I CAN\'T WAIT!', why:'That fizzy, bubbly, can\'t-sit-still feeling? That\'s excitement! Your body is getting ready for something AMAZING. It\'s like your insides are doing a happy dance!', causes:['My birthday is coming!','Going on a trip','Meeting someone special','Getting to do something fun','Opening a present'] },
+    quick:['savoring','grounding54321','boxBreathing'], deep:['savoring','valuesCompass','activation']
+  },
+  love: {
+    color:'#E63946',
+    adult:{ name:'Love', tag:'The deepest form of safety.', why:'Love activates oxytocin and vasopressin pathways that create bonding, trust, and a sense of safety. It\'s the neurobiological foundation of attachment — the signal that this person, this place, this moment is worth protecting and holding close.', causes:['Deep connection with someone','Feeling truly seen and accepted','Caring for someone vulnerable','Moments of intimacy','Witnessing kindness'] },
+    kid:{ name:'Loving', tag:'My heart feels big and warm.', why:'Love is the warm, safe, big feeling you get when you\'re with people who matter to you. It\'s like a cozy blanket around your heart. Love makes you want to give hugs and be close.', causes:['Cuddles with family','My pet being sweet','My best friend being kind','Someone taking care of me','Saying I love you'] },
+    quick:['savoring','gratitude','sharing'], deep:['savoring','valuesCompass','gratitude']
+  },
+  gratitude: {
+    color:'#FCA311',
+    adult:{ name:'Gratitude', tag:'Recognising what\'s already here.', why:'Gratitude shifts your attention from what\'s missing to what\'s present. Research consistently shows it strengthens social bonds, improves sleep, reduces inflammation, and builds resilience. It is one of the most reliably beneficial positive emotions.', causes:['Receiving unexpected kindness','Recognising what you have','Surviving a difficulty','Someone going out of their way','Moments of beauty or peace'] },
+    kid:{ name:'Thankful', tag:'My heart feels full and warm.', why:'The thankful feeling happens when you notice something good — like a kindness, a gift, or just something nice in your day. It makes your heart feel like it\'s smiling.', causes:['Someone helped me','I got a surprise gift','I noticed something beautiful','Someone was really kind','I have people who love me'] },
+    quick:['savoring','gratitude','sharing'], deep:['gratitude','valuesCompass','savoring']
+  },
+  serenity: {
+    color:'#52B788',
+    adult:{ name:'Serenity', tag:'The nervous system at rest.', why:'Serenity indicates your parasympathetic nervous system is dominant — the "rest and digest" state. Your body is recovering, your mind is clear, and you feel safe. This is the biological state from which we heal, create, and connect most effectively.', causes:['Being in nature','Feeling safe and settled','After resolving conflict','Meditation or mindfulness','Accepting what is'] },
+    kid:{ name:'Calm', tag:'Quiet and easy, like floating on a cloud.', why:'The calm feeling is when everything slows down nice and easy. Your body feels soft, your breathing is slow, and your mind is like a quiet pond. This is your brain\'s favourite resting spot.', causes:['Cuddling up with someone I love','Quiet reading time','Being in nature','Listening to soft music','After a busy day finally resting'] },
+    quick:['savoring','breathing478','grounding54321'], deep:['savoring','valuesCompass','gratitude']
+  },
+  hope: {
+    color:'#48BFE3',
+    adult:{ name:'Hope', tag:'Belief in a way forward.', why:'Hope is not passive wishing — it requires both "pathway thinking" (seeing a route to your goal) and "agency thinking" (believing you can walk that route). Research shows hope is one of the strongest predictors of wellbeing and academic achievement.', causes:['Seeing a possible solution','Receiving encouragement','Small wins after setbacks','Connecting with supportive people','Imagining a better future'] },
+    kid:{ name:'Hopeful', tag:'I think something good is coming.', why:'Hope is like a little light in the dark — it helps you keep going even when things are tough. It\'s your brain saying "we can do this, there IS a way!"', causes:['Someone believes in me','I see a way to fix it','Tomorrow might be better','I\'m getting closer to my goal','I made a wish and believe in it'] },
+    quick:['savoring','gratitude','activation'], deep:['valuesCompass','activation','savoring']
+  },
+  pride: {
+    color:'#9B5DE5',
+    adult:{ name:'Pride', tag:'Competence confirmed.', why:'Authentic pride (distinct from hubristic pride) comes from effort-based achievement. It reinforces the behaviours that led to success, motivates continued growth, and contributes to healthy self-esteem. It says: what you did mattered, and you\'re capable.', causes:['Achieving a meaningful goal','Overcoming a challenge','Being recognised for effort','Mastering a new skill','Helping someone successfully'] },
+    kid:{ name:'Proud', tag:'I feel like a superhero!', why:'The proud feeling makes you stand tall and feel strong! It comes when you work really hard at something and it pays off. It\'s your brain\'s way of giving you a gold star.', causes:['I did something hard and succeeded','Someone said "great job!"','I learned something new','I helped someone who needed it','I was brave even though I was scared'] },
+    quick:['savoring','sharing','gratitude'], deep:['savoring','valuesCompass','activation']
+  },
+  amusement: {
+    color:'#FB8500',
+    adult:{ name:'Amusement', tag:'Tension released through laughter.', why:'Humour requires rapid cognitive reappraisal — seeing incongruity between expectation and reality. Laughter releases endorphins, reduces cortisol, and strengthens social bonds. It\'s one of the fastest ways to shift an emotional state.', causes:['Incongruity and surprise','Playful social interaction','Absurdity in everyday life','Shared jokes and stories','Physical comedy or slapstick'] },
+    kid:{ name:'Silly', tag:'I\'ve got the giggles and they won\'t stop!', why:'When something is funny, your brain does a little flip — it expected one thing and got something totally different! That surprise makes you laugh, and laughing feels SO GOOD.', causes:['A really funny joke','Someone making silly faces','Something unexpected and goofy','Tickles and play fighting','A funny video or book'] },
+    quick:['savoring','sharing','grounding54321'], deep:['savoring','valuesCompass','activation']
+  },
+  awe: {
+    color:'#3A0CA3',
+    adult:{ name:'Awe', tag:'Perceiving something vast.', why:'Awe occurs when you encounter something that exceeds your current mental framework — vastness that requires cognitive accommodation. It reduces self-focus, increases feelings of connectedness, and is associated with reduced inflammatory markers. It literally makes you feel part of something larger.', causes:['Encountering natural grandeur','Extraordinary human achievement','Spiritual or transcendent experiences','Scientific discovery or insight','Art that moves you deeply'] },
+    kid:{ name:'Wonder', tag:'My eyes are SO wide and my mouth is open!', why:'The wonder feeling happens when you see something SO BIG or SO AMAZING that your brain can barely fit it in! It makes you feel tiny but in a cool way — like the universe is showing off.', causes:['Looking at the stars','Seeing the ocean or mountains','An incredible magic trick','Learning something mind-blowing','Beautiful music or art'] },
+    quick:['savoring','grounding54321','breathing478'], deep:['savoring','valuesCompass','gratitude']
+  }
+};
+
+// ═══════════════════════════════════════════════════════════
+// PHASE 4: SYMPTOM MATRIX (52 symptoms)
+// ═══════════════════════════════════════════════════════════
+const SYMPTOMS = [
+  // ── BODY (18) ──
+  {id:'racing_heart',cat:'body',a:'Racing heart',k:'Heart going boom-boom-boom',s:{anxiety:3,fear:3,anger:2,excitement:2,surprise:1}},
+  {id:'tight_chest',cat:'body',a:'Tight chest',k:'Chest feels squeezy',s:{anxiety:3,fear:2,sadness:2,grief:2,overwhelm:1}},
+  {id:'shallow_breath',cat:'body',a:'Shallow breathing',k:'Hard to breathe',s:{anxiety:3,fear:2,overwhelm:2}},
+  {id:'fatigue',cat:'body',a:'Fatigue / exhaustion',k:'So so tired',s:{sadness:3,grief:2,overwhelm:2,boredom:1}},
+  {id:'tense',cat:'body',a:'Muscle tension',k:'Body feels stiff',s:{anger:3,frustration:3,anxiety:2}},
+  {id:'heavy',cat:'body',a:'Heaviness in body',k:'Body feels heavy',s:{sadness:3,grief:3,shame:2,loneliness:1}},
+  {id:'hot_face',cat:'body',a:'Flushed face / hot cheeks',k:'Hot red face',s:{embarrassment:3,shame:2,anger:2,excitement:1}},
+  {id:'tears',cat:'body',a:'Tearfulness',k:'Want to cry',s:{sadness:3,grief:3,frustration:2,gratitude:1,joy:1}},
+  {id:'warmth',cat:'body',a:'Warmth spreading through body',k:'Warm fuzzy feeling',s:{love:3,joy:2,gratitude:2,serenity:1}},
+  {id:'light',cat:'body',a:'Lightness / buoyancy',k:'Bouncy light body',s:{joy:3,excitement:2,hope:2,amusement:2}},
+  {id:'goosebumps',cat:'body',a:'Goosebumps / chills',k:'Tingly prickly skin',s:{awe:3,fear:1,excitement:1}},
+  {id:'nausea',cat:'body',a:'Nausea / stomach churning',k:'Tummy feels sick',s:{disgust:3,anxiety:2,guilt:2,fear:1}},
+  {id:'lump_throat',cat:'body',a:'Lump in throat',k:'Something stuck in my throat',s:{grief:3,sadness:2,guilt:2,gratitude:1}},
+  {id:'restless',cat:'body',a:'Restless / fidgety',k:'Can\'t sit still',s:{anxiety:2,excitement:2,boredom:2,frustration:2}},
+  {id:'clenched',cat:'body',a:'Clenched jaw or fists',k:'Hands in tight fists',s:{anger:3,frustration:2}},
+  {id:'butterflies',cat:'body',a:'Butterflies in stomach',k:'Tummy flutters',s:{anxiety:2,excitement:3,love:2}},
+  {id:'numb',cat:'body',a:'Numbness / disconnection',k:'Can\'t feel my body',s:{overwhelm:3,grief:2,shame:1}},
+  {id:'energy_surge',cat:'body',a:'Surge of energy',k:'So much energy!',s:{anger:2,excitement:3,joy:2,surprise:1}},
+
+  // ── MIND (18) ──
+  {id:'looping',cat:'mind',a:'Looping thoughts',k:'Same thought over and over',s:{anxiety:3,guilt:2,shame:2}},
+  {id:'catastrophizing',cat:'mind',a:'Catastrophizing',k:'Thinking the WORST thing',s:{anxiety:3,fear:2}},
+  {id:'fog',cat:'mind',a:'Mental fog / can\'t think clearly',k:'Fuzzy brain',s:{overwhelm:3,confusion:2,sadness:2}},
+  {id:'self_critic',cat:'mind',a:'Harsh self-criticism',k:'Being mean to myself',s:{shame:3,guilt:2,sadness:1}},
+  {id:'hopeless',cat:'mind',a:'Hopelessness',k:'It\'ll never get better',s:{sadness:3,grief:2,loneliness:2}},
+  {id:'irritable',cat:'mind',a:'Irritability',k:'Everything is annoying',s:{frustration:3,anger:2,boredom:1}},
+  {id:'optimism',cat:'mind',a:'Optimistic thoughts',k:'Good things are coming',s:{hope:3,joy:2,excitement:1}},
+  {id:'appreciation',cat:'mind',a:'Noticing what\'s good',k:'Seeing nice things',s:{gratitude:3,serenity:2,awe:1}},
+  {id:'curiosity_m',cat:'mind',a:'Curiosity / wonder',k:'I want to know MORE',s:{awe:2,surprise:1,excitement:1,confusion:1}},
+  {id:'comparing',cat:'mind',a:'Comparing self to others',k:'They\'re better than me',s:{envy:3,shame:2}},
+  {id:'replaying',cat:'mind',a:'Replaying events',k:'Can\'t stop thinking about what happened',s:{guilt:3,embarrassment:2,shame:2}},
+  {id:'cant_focus',cat:'mind',a:'Can\'t concentrate',k:'Brain won\'t focus',s:{overwhelm:2,anxiety:2,boredom:2,confusion:1}},
+  {id:'injustice',cat:'mind',a:'Sense of injustice',k:'That\'s SO not fair!',s:{anger:3,frustration:2,envy:1}},
+  {id:'detached',cat:'mind',a:'Feeling unreal / detached',k:'Everything feels weird',s:{overwhelm:2,fear:1,confusion:2,grief:1}},
+  {id:'longing',cat:'mind',a:'Longing for the past',k:'I want things how they were',s:{grief:2,sadness:2,loneliness:1}},
+  {id:'connected',cat:'mind',a:'Feeling connected to others',k:'I feel close to people',s:{love:3,gratitude:2,serenity:1}},
+  {id:'inspired',cat:'mind',a:'Feeling inspired',k:'I want to create something!',s:{awe:2,hope:2,excitement:2,pride:1}},
+  {id:'blank',cat:'mind',a:'Mind going blank',k:'Brain stopped working',s:{surprise:2,confusion:2,fear:1,overwhelm:1}},
+
+  // ── BEHAVIOUR (16) ──
+  {id:'avoid',cat:'beh',a:'Avoiding situations',k:'Don\'t want to go',s:{anxiety:3,shame:2,fear:2,embarrassment:1}},
+  {id:'snap',cat:'beh',a:'Snapping at people',k:'Yelling or mean words',s:{anger:3,frustration:2}},
+  {id:'withdraw',cat:'beh',a:'Pulling away from people',k:'Want to be alone',s:{sadness:2,shame:2,loneliness:2,grief:2}},
+  {id:'checking',cat:'beh',a:'Compulsive checking',k:'Checking things over and over',s:{anxiety:3,guilt:1}},
+  {id:'smiling',cat:'beh',a:'Smiling / laughing',k:'Big smiles and giggles',s:{joy:3,amusement:3,love:1,excitement:1}},
+  {id:'helping',cat:'beh',a:'Wanting to help others',k:'I want to help!',s:{love:2,gratitude:2,pride:1}},
+  {id:'sharing',cat:'beh',a:'Telling others / sharing',k:'I want to show everyone!',s:{pride:2,joy:2,excitement:2}},
+  {id:'slowing',cat:'beh',a:'Moving slowly / still',k:'Going really slow',s:{serenity:3,sadness:2,awe:1}},
+  {id:'pacing',cat:'beh',a:'Pacing / restless movement',k:'Walking back and forth',s:{anxiety:2,frustration:2,excitement:1}},
+  {id:'crying',cat:'beh',a:'Crying',k:'Tears coming out',s:{sadness:3,grief:3,frustration:1,joy:1,gratitude:1}},
+  {id:'hitting',cat:'beh',a:'Urge to hit or throw',k:'Want to smash things',s:{anger:3,frustration:2}},
+  {id:'reassurance',cat:'beh',a:'Seeking reassurance',k:'Asking "is it OK?" a lot',s:{anxiety:2,guilt:2,loneliness:1}},
+  {id:'zoning',cat:'beh',a:'Zoning out / scrolling',k:'Staring at nothing',s:{boredom:3,overwhelm:2,loneliness:1}},
+  {id:'escape',cat:'beh',a:'Wanting to run away',k:'I need to get OUT',s:{fear:3,overwhelm:2,embarrassment:2}},
+  {id:'reaching',cat:'beh',a:'Reaching out to people',k:'Wanting to be with someone',s:{loneliness:2,love:2,gratitude:1}},
+  {id:'freezing',cat:'beh',a:'Freezing / can\'t move',k:'Stuck like a statue',s:{fear:2,overwhelm:2,surprise:2}}
+];
+
+// ═══════════════════════════════════════════════════════════
+// PHASE 5: TOOL DEFINITIONS
+// ═══════════════════════════════════════════════════════════
+const TOOLS = {
+  boxBreathing: {
+    a:{name:'Box Breathing',desc:'4-4-4-4 pattern to regulate your nervous system',icon:'&#9723;'},
+    k:{name:'Square Breathing',desc:'Breathe around the magic square',icon:'&#10024;'},
+    type:'quick'
+  },
+  breathing478: {
+    a:{name:'4-7-8 Breathing',desc:'Activates your parasympathetic calming response',icon:'&#127744;'},
+    k:{name:'Sleepy Breath',desc:'The breathing trick that melts worries away',icon:'&#127769;'},
+    type:'quick'
+  },
+  grounding54321: {
+    a:{name:'5-4-3-2-1 Grounding',desc:'Anchor yourself in the present moment',icon:'&#9875;'},
+    k:{name:'Senses Safari',desc:'Go on a hunt with your 5 senses!',icon:'&#128065;'},
+    type:'quick'
+  },
+  pmr: {
+    a:{name:'Muscle Release',desc:'Progressive tension and release to let go of physical stress',icon:'&#128170;'},
+    k:{name:'Squeeze & Let Go',desc:'Squeeze tight like a robot, then melt like butter!',icon:'&#129302;'},
+    type:'quick'
+  },
+  tipp: {
+    a:{name:'TIPP Crisis Reset',desc:'Immediate distress tolerance through physiological hacks',icon:'&#10052;'},
+    k:{name:'Emergency Cool-Down',desc:'Super-powered body hacks for BIG feelings',icon:'&#128165;'},
+    type:'quick'
+  },
+  selfCompassion: {
+    a:{name:'Self-Compassion Break',desc:'Three steps to treat yourself as you\'d treat a friend',icon:'&#128156;'},
+    k:{name:'Be Your Own Best Friend',desc:'Talk to yourself the way your best friend would',icon:'&#129303;'},
+    type:'quick'
+  },
+  savoring: {
+    a:{name:'Savoring Practice',desc:'Amplify positive experience with all five senses',icon:'&#127800;'},
+    k:{name:'Happiness Magnifier',desc:'Make good feelings BIGGER and LONGER',icon:'&#128526;'},
+    type:'quick'
+  },
+  gratitude: {
+    a:{name:'Gratitude Moment',desc:'Quick reflection to shift your attention to what\'s good',icon:'&#128153;'},
+    k:{name:'Thank You Heart',desc:'Fill your heart with things you\'re thankful for',icon:'&#128155;'},
+    type:'quick'
+  },
+  sharing: {
+    a:{name:'Share the Feeling',desc:'Amplify positive emotions through social connection',icon:'&#128172;'},
+    k:{name:'Tell Someone!',desc:'Good feelings get BIGGER when you share them',icon:'&#128227;'},
+    type:'quick'
+  },
+  reframe: {
+    a:{name:'Cognitive Reframing',desc:'Challenge thinking patterns by examining the evidence',icon:'&#128269;'},
+    k:{name:'Thought Detective',desc:'Put on your detective hat and investigate your thoughts!',icon:'&#128373;'},
+    type:'deep'
+  },
+  oppositeAction: {
+    a:{name:'Opposite Action',desc:'Act against the emotional urge when it\'s not serving you',icon:'&#8644;'},
+    k:{name:'The Switcheroo',desc:'Do the OPPOSITE of what the feeling wants!',icon:'&#128260;'},
+    type:'deep'
+  },
+  defusion: {
+    a:{name:'Thought Defusion',desc:'Create distance between you and your thoughts',icon:'&#127811;'},
+    k:{name:'Cloud Watching',desc:'Let your thoughts float by like clouds in the sky',icon:'&#9729;'},
+    type:'deep'
+  },
+  valuesCompass: {
+    a:{name:'Values Compass',desc:'Reconnect with what matters most to guide your next step',icon:'&#129517;'},
+    k:{name:'What Matters Most',desc:'Find your superpower by remembering what you care about',icon:'&#11088;'},
+    type:'deep'
+  },
+  activation: {
+    a:{name:'Tiny Step Forward',desc:'Break the inertia with one small, manageable action',icon:'&#128099;'},
+    k:{name:'1-2-3 Go!',desc:'Pick one teeny tiny thing and DO it!',icon:'&#127939;'},
+    type:'deep'
+  }
+};
+
+// ═══════════════════════════════════════════════════════════
+// PHASE 6: SCORING ENGINE & NAVIGATION
+// ═══════════════════════════════════════════════════════════
+const S = { kids:false, sel:new Set(), emotion:null, intensity:null, timers:[] };
+
+function init(){
+  S.kids = false;
+  renderSymptoms();
+  updateModeUI();
+}
+
+function updateModeUI(){
+  const tog = document.getElementById('modeTog');
+  tog.classList.toggle('kids', S.kids);
+  document.getElementById('modeL').innerText = S.kids ? 'Kids' : 'Adult';
+  document.getElementById('mainT').innerText = S.kids ? "What's happening right now?" : "What are you experiencing?";
+  document.getElementById('mainS').innerText = S.kids ? "Tap everything that feels true." : "Select everything that resonates.";
+  document.getElementById('contBtn').innerText = S.kids ? "What is this feeling?" : "Identify this feeling";
+  document.getElementById('catBody').innerText = S.kids ? "My Body" : "Body";
+  document.getElementById('catMind').innerText = S.kids ? "My Thoughts" : "Mind";
+  document.getElementById('catBeh').innerText = S.kids ? "What I'm Doing" : "Actions";
+  document.getElementById('int1').innerText = S.kids ? "A little" : "Mild";
+  document.getElementById('int2').innerText = S.kids ? "Medium" : "Moderate";
+  document.getElementById('int3').innerText = S.kids ? "A LOT" : "Strong";
+  document.getElementById('newBtn').innerText = S.kids ? "Start Over" : "New Session";
+  document.getElementById('intLabel').innerText = S.kids ? "How big is this feeling?" : "How intense is this?";
+}
+
+function renderSymptoms(){
+  ['body','mind','beh'].forEach(cat => {
+    const div = document.getElementById(cat+'Sym');
+    div.innerHTML = '';
+    SYMPTOMS.filter(s=>s.cat===cat).forEach(s => {
+      const btn = document.createElement('button');
+      btn.className = 'sym-pill' + (S.sel.has(s.id) ? ' sel' : '');
+      btn.innerText = S.kids ? s.k : s.a;
+      btn.onclick = () => toggleSym(s.id);
+      div.appendChild(btn);
+    });
+  });
+}
+
+function toggleSym(id){
+  S.sel.has(id) ? S.sel.delete(id) : S.sel.add(id);
+  document.getElementById('contBtn').disabled = S.sel.size === 0;
+  renderSymptoms();
+  if(S.sel.size > 0){
+    updateOrbs();
+    // Pulse: brief opacity bump on selection for "alive" feel
+    ['orb1','orb2','orb3'].forEach((oid,i) => {
+      const orb = document.getElementById(oid);
+      const base = [0.18, 0.14, 0.16][i];
+      orb.style.opacity = (base + 0.08).toString();
+      setTimeout(()=>{ orb.style.opacity = base.toString(); }, 600);
+    });
+  } else {
+    resetOrbs();
+  }
+}
+
+function calcScores(){
+  const scores = {};
+  Object.keys(EMOTIONS).forEach(k => scores[k] = 0);
+  S.sel.forEach(sid => {
+    const sym = SYMPTOMS.find(s => s.id === sid);
+    if(sym) Object.entries(sym.s).forEach(([k,v]) => { if(scores[k]!==undefined) scores[k]+=v; });
+  });
+  return scores;
+}
+
+function updateOrbs(){
+  const sc = calcScores();
+  const top = Object.entries(sc).sort((a,b)=>b[1]-a[1])[0];
+  if(top && EMOTIONS[top[0]]){
+    const c = EMOTIONS[top[0]].color;
+    setThemeColor(c);
+  }
+}
+
+function setThemeColor(c){
+  document.documentElement.style.setProperty('--em-c', c);
+  document.documentElement.style.setProperty('--em-g', c+'66');
+  document.documentElement.style.setProperty('--em-l', c+'cc');
+  // Generate gradient companions: lighter tint and warm/cool shift
+  const hsl = hexToHSL(c);
+  const h2 = (hsl.h + 30) % 360;  // analogous warm
+  const h3 = (hsl.h + 330) % 360; // analogous cool
+  const c2 = `hsl(${h2}, ${Math.min(hsl.s+10,100)}%, ${Math.min(hsl.l+15,70)}%)`;
+  const c3 = `hsl(${h3}, ${Math.min(hsl.s+5,100)}%, ${Math.min(hsl.l+10,65)}%)`;
+  document.getElementById('orb1').style.background = `linear-gradient(135deg, ${c}, ${c2})`;
+  document.getElementById('orb1').style.opacity = '0.18';
+  document.getElementById('orb2').style.background = `linear-gradient(135deg, ${c2}, ${c3})`;
+  document.getElementById('orb2').style.opacity = '0.14';
+  document.getElementById('orb3').style.background = `linear-gradient(135deg, ${c3}, ${c})`;
+  document.getElementById('orb3').style.opacity = '0.16';
+}
+
+function hexToHSL(hex){
+  let r=parseInt(hex.slice(1,3),16)/255, g=parseInt(hex.slice(3,5),16)/255, b=parseInt(hex.slice(5,7),16)/255;
+  const max=Math.max(r,g,b), min=Math.min(r,g,b), d=max-min;
+  let h=0, s=0, l=(max+min)/2;
+  if(d>0){ s=l>0.5?d/(2-max-min):d/(max+min); switch(max){case r:h=((g-b)/d+(g<b?6:0))*60;break;case g:h=((b-r)/d+2)*60;break;case b:h=((r-g)/d+4)*60;break;} }
+  return {h:Math.round(h),s:Math.round(s*100),l:Math.round(l*100)};
+}
+
+function resetOrbs(){
+  document.getElementById('orb1').style.background = 'linear-gradient(135deg,#FF6B6B,#FF8E53)';
+  document.getElementById('orb1').style.opacity = '0.15';
+  document.getElementById('orb2').style.background = 'linear-gradient(135deg,#4ECDC4,#44A3AA)';
+  document.getElementById('orb2').style.opacity = '0.12';
+  document.getElementById('orb3').style.background = 'linear-gradient(135deg,#A78BFA,#8B5CF6)';
+  document.getElementById('orb3').style.opacity = '0.13';
+}
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// Continue button
+document.getElementById('contBtn').onclick = () => {
+  const sc = calcScores();
+  const sorted = Object.entries(sc).sort((a,b)=>b[1]-a[1]);
+  S.emotion = sorted[0][0];
+  const em = EMOTIONS[S.emotion];
+  const txt = S.kids ? em.kid : em.adult;
+  
+  setThemeColor(em.color);
+  document.getElementById('detEm').innerText = txt.name;
+  document.getElementById('detEm').style.color = em.color;
+  document.getElementById('emTag').innerText = txt.tag;
+  document.getElementById('emWhy').innerText = txt.why;
+  
+  document.querySelectorAll('.int-btn').forEach(b => b.classList.remove('sel'));
+  showScreen('detScr');
+};
+
+// Mode toggle
+document.getElementById('modeTog').onclick = () => {
+  S.kids = !S.kids;
+  updateModeUI();
+  renderSymptoms();
+  // Re-render the active screen so language switches everywhere
+  if(S.emotion) {
+    const em = EMOTIONS[S.emotion];
+    const txt = S.kids ? em.kid : em.adult;
+    // Detection screen
+    const detEm = document.getElementById('detEm');
+    if(detEm) { detEm.innerText = txt.name; }
+    const emTag = document.getElementById('emTag');
+    if(emTag) { emTag.innerText = txt.tag; }
+    const emWhy = document.getElementById('emWhy');
+    if(emWhy) { emWhy.innerText = txt.why; }
+    // Results screen (if visible)
+    if(document.getElementById('resScr').classList.contains('active')) {
+      showResults();
+    }
+  }
+};
+
+// Intensity selection
+window.selInt = (lvl) => {
+  S.intensity = lvl;
+  document.querySelectorAll('.int-btn').forEach(b => b.classList.remove('sel'));
+  event.currentTarget.classList.add('sel');
+  setTimeout(showResults, 300);
+};
+
+function showResults(){
+  const em = EMOTIONS[S.emotion];
+  const txt = S.kids ? em.kid : em.adult;
+  
+  document.getElementById('resEm').innerText = txt.name;
+  document.getElementById('resEm').style.color = em.color;
+  document.getElementById('resTag').innerText = txt.tag;
+  document.getElementById('whyT').innerText = S.kids ? "Why this happens" : "Understanding this";
+  document.getElementById('whyText').innerText = txt.why;
+  document.getElementById('causeL').innerHTML = txt.causes.map(c => 
+    `<li><div class="cause-dot"></div><span>${c}</span></li>`
+  ).join('');
+  
+  document.getElementById('quickT').innerText = S.kids ? "Feel better fast" : "Quick Relief";
+  document.getElementById('deepT').innerText = S.kids ? "Try going deeper" : "Deeper Strategies";
+  
+  // Build tool lists
+  const quickTools = em.quick.map(id => toolCard(id)).join('');
+  const deepTools = em.deep.map(id => toolCard(id)).join('');
+  document.getElementById('quickL').innerHTML = quickTools;
+  document.getElementById('deepL').innerHTML = deepTools;
+  
+  showScreen('resScr');
+}
+
+function toolCard(toolId){
+  const t = TOOLS[toolId];
+  const d = S.kids ? t.k : t.a;
+  return `<button class="tool-c" onclick="openTool('${toolId}')">
+    <div class="tool-i">${d.icon}</div>
+    <div class="tool-info"><span class="tool-n">${d.name}</span><span class="tool-d">${d.desc}</span></div>
+    <span class="tool-arrow">&#8250;</span>
+  </button>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// PHASE 7: INTERACTIVE TOOL MODALS
+// ═══════════════════════════════════════════════════════════
+function clearTimers(){ S.timers.forEach(t=>clearInterval(t)); S.timers.forEach(t=>clearTimeout(t)); S.timers=[]; }
+
+window.openTool = (toolId) => {
+  clearTimers();
+  const t = TOOLS[toolId];
+  const d = S.kids ? t.k : t.a;
+  document.getElementById('toolName').innerText = d.name;
+  const c = document.getElementById('toolContent');
+  
+  const renderers = {
+    boxBreathing: renderBoxBreathing,
+    breathing478: renderBreathing478,
+    grounding54321: renderGrounding,
+    pmr: renderPMR,
+    tipp: renderTIPP,
+    selfCompassion: renderSelfCompassion,
+    savoring: renderSavoring,
+    gratitude: renderGratitude,
+    sharing: renderSharing,
+    reframe: renderReframe,
+    oppositeAction: renderOppositeAction,
+    defusion: renderDefusion,
+    valuesCompass: renderValuesCompass,
+    activation: renderActivation
+  };
+  
+  if(renderers[toolId]) renderers[toolId](c);
+  document.getElementById('toolModal').classList.add('active');
+};
+
+window.closeTool = () => {
+  clearTimers();
+  document.getElementById('toolModal').classList.remove('active');
+};
+
+window.goHome = () => {
+  clearTimers();
+  S.sel.clear(); S.emotion=null; S.intensity=null;
+  document.getElementById('contBtn').disabled = true;
+  resetOrbs();
+  document.documentElement.style.setProperty('--em-c', '#7B5BBF');
+  document.documentElement.style.setProperty('--em-g', 'rgba(123,91,191,0.4)');
+  document.documentElement.style.setProperty('--em-l', '#9B7BDF');
+  renderSymptoms();
+  updateModeUI();
+  showScreen('startScr');
+};
+
+// ── TOOL: Box Breathing ──
+function renderBoxBreathing(c){
+  c.innerHTML = `
+    <div class="tool-step">
+      <p class="tool-sub">${S.kids ? 'Follow the glowing dot around the square. Breathe with it!' : 'Follow the light. Each side is 4 seconds.'}</p>
+      <div class="box-container">
+        <div class="box-border">
+          <div class="box-dot" id="boxDot"></div>
+          <div class="box-center-text" id="boxText">${S.kids ? 'Ready?' : 'Tap to begin'}</div>
+        </div>
+        <div class="box-side-label box-label-top">${S.kids ? 'Breathe in' : 'Inhale'}</div>
+        <div class="box-side-label box-label-right">${S.kids ? 'Wait' : 'Hold'}</div>
+        <div class="box-side-label box-label-bottom">${S.kids ? 'Breathe out' : 'Exhale'}</div>
+        <div class="box-side-label box-label-left">${S.kids ? 'Wait' : 'Hold'}</div>
+      </div>
+      <p class="breath-counter" id="boxCounter"></p>
+      <button class="btn btn-em" onclick="startBox()" id="boxStartBtn">Start</button>
+    </div>`;
+}
+
+window.startBox = () => {
+  const dot = document.getElementById('boxDot');
+  const text = document.getElementById('boxText');
+  const counter = document.getElementById('boxCounter');
+  const btn = document.getElementById('boxStartBtn');
+  if(!dot) return;
+  btn.style.display = 'none';
+  dot.classList.remove('active'); void dot.offsetWidth; dot.classList.add('active');
+  const phases = S.kids ? ['Breathe in...','Hold it...','Breathe out...','Hold it...'] : ['Inhale','Hold','Exhale','Hold'];
+  let idx=0, cycles=0;
+  text.innerText = phases[0];
+  counter.innerText = 'Cycle 1 of 4';
+  const timer = setInterval(()=>{
+    idx = (idx+1) % 4;
+    if(idx===0) cycles++;
+    if(cycles>=4){ clearInterval(timer); showComplete(document.getElementById('toolContent'), S.kids ? 'Great breathing!' : 'Well done. Notice how you feel.'); return; }
+    text.innerText = phases[idx];
+    counter.innerText = `Cycle ${cycles+1} of 4`;
+  }, 4000);
+  S.timers.push(timer);
+};
+
+// ── TOOL: 4-7-8 Breathing ──
+function renderBreathing478(c){
+  c.innerHTML = `
+    <div class="tool-step">
+      <p class="tool-sub">${S.kids ? 'This special breath makes your whole body relax. Try it!' : 'Inhale for 4, hold for 7, exhale for 8. One of the most effective calming techniques known.'}</p>
+      <div class="breath-circle-wrap">
+        <div class="breath-circle">
+          <div class="breath-fill" id="breathFill"></div>
+          <div class="breath-text" id="breathText">${S.kids ? 'Ready?' : 'Begin'}</div>
+        </div>
+      </div>
+      <p class="breath-counter" id="breathCounter"></p>
+      <button class="btn btn-em" onclick="start478()" id="btn478">Start</button>
+    </div>`;
+}
+
+window.start478 = () => {
+  const fill = document.getElementById('breathFill');
+  const text = document.getElementById('breathText');
+  const counter = document.getElementById('breathCounter');
+  document.getElementById('btn478').style.display='none';
+  let cycle=0;
+  function runCycle(){
+    if(cycle>=3){ showComplete(document.getElementById('toolContent'), S.kids ? 'You did it! Feel that calm?' : 'Notice the shift in your nervous system.'); return; }
+    counter.innerText = `Breath ${cycle+1} of 3`;
+    // Inhale 4s
+    fill.classList.add('expand'); text.innerText = S.kids ? 'Breathe in...' : 'Inhale';
+    let t1 = setTimeout(()=>{
+      text.innerText = S.kids ? 'Hold it...' : 'Hold';
+      let t2 = setTimeout(()=>{
+        fill.classList.remove('expand'); text.innerText = S.kids ? 'Blow out slow...' : 'Exhale';
+        let t3 = setTimeout(()=>{ cycle++; runCycle(); }, 8000);
+        S.timers.push(t3);
+      }, 7000);
+      S.timers.push(t2);
+    }, 4000);
+    S.timers.push(t1);
+  }
+  runCycle();
+};
+
+// ── TOOL: 5-4-3-2-1 Grounding ──
+function renderGrounding(c){
+  const steps = S.kids ? [
+    {n:5,sense:'SEE',emoji:'&#128064;',prompt:'Tap 5 things you can see right now!'},
+    {n:4,sense:'HEAR',emoji:'&#128066;',prompt:'Tap 4 things you can hear!'},
+    {n:3,sense:'TOUCH',emoji:'&#9995;',prompt:'Tap 3 things you can feel with your hands!'},
+    {n:2,sense:'SMELL',emoji:'&#128067;',prompt:'Tap 2 things you can smell!'},
+    {n:1,sense:'TASTE',emoji:'&#128069;',prompt:'Tap 1 thing you can taste!'}
+  ] : [
+    {n:5,sense:'SEE',emoji:'&#128064;',prompt:'Notice 5 things you can see. Tap each one.'},
+    {n:4,sense:'HEAR',emoji:'&#128066;',prompt:'Focus on 4 things you can hear.'},
+    {n:3,sense:'TOUCH',emoji:'&#9995;',prompt:'Feel 3 things you can physically touch.'},
+    {n:2,sense:'SMELL',emoji:'&#128067;',prompt:'Identify 2 things you can smell.'},
+    {n:1,sense:'TASTE',emoji:'&#128069;',prompt:'Notice 1 thing you can taste.'}
+  ];
+  
+  let stepIdx = 0;
+  function renderStep(){
+    if(stepIdx >= steps.length){ showComplete(c, S.kids ? 'You\'re right here, right now. Safe and sound!' : 'You are here. Present. Grounded.'); return; }
+    const s = steps[stepIdx];
+    const dots = steps.map((_,i)=>`<div class="tool-dot ${i<stepIdx?'done':''} ${i===stepIdx?'active':''}"></div>`).join('');
+    let count = 0;
+    const items = Array.from({length:s.n},(_,i)=>`<button class="ground-item" data-gi="${i}">${s.emoji}</button>`).join('');
+    c.innerHTML = `<div class="ground-step">
+      <div class="tool-progress">${dots}</div>
+      <div class="ground-num">${s.n}</div>
+      <div class="ground-sense">${s.sense}</div>
+      <p class="ground-prompt">${s.prompt}</p>
+      <div class="ground-items" id="groundItems">${items}</div>
+    </div>`;
+    document.querySelectorAll('[data-gi]').forEach(btn=>{
+      btn.onclick = function(){
+        if(this.classList.contains('checked')) return;
+        this.classList.add('checked');
+        count++;
+        if(count>=s.n){ stepIdx++; setTimeout(renderStep, 400); }
+      };
+    });
+  }
+  renderStep();
+}
+
+// ── TOOL: PMR (Progressive Muscle Relaxation) ──
+function renderPMR(c){
+  const groups = S.kids ? [
+    {name:'Hands',emoji:'&#9994;',tense:'Squeeze your fists SUPER tight!',release:'Let them go soft like cooked noodles.'},
+    {name:'Arms',emoji:'&#128170;',tense:'Make your arms strong like a superhero!',release:'Drop them down, floppy like a ragdoll.'},
+    {name:'Shoulders',emoji:'&#129470;',tense:'Push your shoulders up to your ears!',release:'Let them drop down. Ahhhhh.'},
+    {name:'Face',emoji:'&#128556;',tense:'Scrunch your face up like you ate a lemon!',release:'Smooth it all out. Big relaxed face.'},
+    {name:'Tummy',emoji:'&#129728;',tense:'Make your tummy hard as a rock!',release:'Let it go soft and squishy.'},
+    {name:'Legs & Feet',emoji:'&#129462;',tense:'Push your toes down and squeeze your legs!',release:'Let everything go wobbly. Like jelly!'}
+  ] : [
+    {name:'Hands & Forearms',emoji:'&#9994;',tense:'Clench your fists tightly.',release:'Release. Feel the contrast.'},
+    {name:'Biceps & Upper Arms',emoji:'&#128170;',tense:'Flex your arms, curl them up tight.',release:'Let them drop. Notice the heaviness.'},
+    {name:'Shoulders & Neck',emoji:'&#129470;',tense:'Raise shoulders to your ears, hold.',release:'Drop them. Let the tension drain.'},
+    {name:'Face & Jaw',emoji:'&#128556;',tense:'Scrunch your face, clench your jaw.',release:'Let your face go completely slack.'},
+    {name:'Chest & Abdomen',emoji:'&#129728;',tense:'Tighten your core, take a deep breath in.',release:'Exhale fully. Let your torso soften.'},
+    {name:'Legs & Feet',emoji:'&#129462;',tense:'Point toes down, tighten calves and thighs.',release:'Release. Feel gravity take over.'}
+  ];
+  
+  let gi = 0;
+  function renderGroup(){
+    if(gi>=groups.length){ showComplete(c, S.kids ? 'Your whole body is like melted butter now!' : 'Full body release complete. Notice the difference.'); return; }
+    const g = groups[gi];
+    const pct = Math.round((gi/groups.length)*100);
+    c.innerHTML = `<div class="tool-step">
+      <div class="pmr-progress"><div class="pmr-progress-fill" style="width:${pct}%"></div></div>
+      <div class="pmr-body">${g.emoji}</div>
+      <p style="font-weight:600;margin-bottom:4px">${g.name}</p>
+      <p class="pmr-instruction" id="pmrInst">${S.kids ? 'Get ready...' : 'Prepare...'}</p>
+      <div class="pmr-timer" id="pmrTimer"></div>
+      <button class="btn btn-em" onclick="startPMRGroup()" id="pmrBtn">${S.kids ? 'Ready!' : 'Begin'}</button>
+    </div>`;
+    window.startPMRGroup = () => {
+      document.getElementById('pmrBtn').style.display='none';
+      const inst = document.getElementById('pmrInst');
+      const timer = document.getElementById('pmrTimer');
+      inst.innerText = g.tense;
+      let sec = 5;
+      timer.innerText = sec;
+      const iv = setInterval(()=>{
+        sec--;
+        timer.innerText = sec > 0 ? sec : '';
+        if(sec<=0){
+          clearInterval(iv);
+          inst.innerText = g.release;
+          inst.style.color = 'var(--em-c)';
+          let rel = 5;
+          timer.innerText = rel;
+          const iv2 = setInterval(()=>{
+            rel--;
+            timer.innerText = rel > 0 ? rel : '';
+            if(rel<=0){ clearInterval(iv2); gi++; renderGroup(); }
+          },1000);
+          S.timers.push(iv2);
+        }
+      },1000);
+      S.timers.push(iv);
+    };
+  }
+  renderGroup();
+}
+
+// ── TOOL: TIPP ──
+function renderTIPP(c){
+  const cards = S.kids ? [
+    {icon:'&#129482;',name:'Cold Reset',detail:'Splash cold water on your face or hold something cold (like an ice pack wrapped in a cloth) against your cheeks for 30 seconds. This triggers a special reflex that slows your heart right down. It\'s like a restart button for your body!'},
+    {icon:'&#127939;',name:'Move Your Body FAST',detail:'Do jumping jacks, run on the spot, or dance wildly for 2 minutes! When you have big feelings, your body fills with energy. Moving fast helps burn that energy off so you can think clearly again.'},
+    {icon:'&#127744;',name:'Slow Breathing',detail:'Breathe in while counting to 4, then breathe out while counting to 6. The out-breath being longer is the secret trick — it tells your body "we\'re safe" and switches on your calm system.'},
+    {icon:'&#129504;',name:'Squeeze & Breathe',detail:'Pick a muscle (like your fists). Squeeze it tight while breathing in for 5 counts. Then let go while breathing out slowly. Do this 3 times. Your body will start to relax almost like magic!'}
+  ] : [
+    {icon:'&#129482;',name:'Temperature',detail:'Submerge your face in cold water or apply a cold pack to your cheeks and forehead for 30 seconds. This activates the mammalian dive reflex, rapidly reducing heart rate and redirecting blood flow to the brain. One of the fastest physiological interventions available.'},
+    {icon:'&#127939;',name:'Intense Exercise',detail:'Engage in vigorous physical activity for 5-10 minutes — sprinting, burpees, jumping jacks. This metabolises the adrenaline and cortisol flooding your system during high-arousal states, creating a natural physiological reset.'},
+    {icon:'&#127744;',name:'Paced Breathing',detail:'Inhale for 4 counts, exhale for 6-8 counts. The extended exhale activates the vagus nerve and engages the parasympathetic nervous system. This is the single most evidence-backed quick intervention for emotional regulation.'},
+    {icon:'&#129504;',name:'Paired Muscle Relaxation',detail:'Tense a muscle group while inhaling for 5 seconds, then release completely while exhaling slowly. Repeat for 3-4 muscle groups. This pairs the relaxation response with breathing, compounding the calming effect.'}
+  ];
+  
+  c.innerHTML = `<div class="tool-step">
+    <p class="tool-sub">${S.kids ? 'These are body tricks that calm you down FAST. Tap each one to learn how.' : 'Four evidence-based physiological interventions for immediate distress reduction. Tap each to learn more.'}</p>
+    <div class="tipp-cards" id="tippCards">
+      ${cards.map((card,i) => `
+        <button class="tipp-card" onclick="toggleTipp(${i})">
+          <div class="tipp-header"><div class="tipp-icon">${card.icon}</div><span class="tipp-name">${card.name}</span></div>
+          <div class="tipp-detail">${card.detail}</div>
+        </button>`).join('')}
+    </div>
+  </div>`;
+}
+
+window.toggleTipp = (i) => {
+  const cards = document.querySelectorAll('.tipp-card');
+  cards[i].classList.toggle('expanded');
+};
+
+// ── TOOL: Self-Compassion Break ──
+function renderSelfCompassion(c){
+  const steps = S.kids ? [
+    {icon:'&#128557;',phrase:'This is hard right now.',explain:'It\'s OK to say that. You\'re not being weak — you\'re being honest about how you feel.'},
+    {icon:'&#127758;',phrase:'Other kids feel this way too.',explain:'You\'re not the only one. All around the world, other kids are having big feelings just like you right now.'},
+    {icon:'&#128156;',phrase:'I\'m going to be kind to me.',explain:'Put your hand on your heart. What would your best friend say to you right now? Say that to yourself.'}
+  ] : [
+    {icon:'&#128557;',phrase:'This is a moment of suffering.',explain:'Acknowledging pain without minimising or dramatising it. Mindfulness is the first step — simply naming what is.'},
+    {icon:'&#127758;',phrase:'Suffering is part of being human.',explain:'You are not alone in this. Common humanity recognises that difficulty is a shared experience, not a personal failing.'},
+    {icon:'&#128156;',phrase:'May I give myself the compassion I need.',explain:'Place your hand on your chest. What would you say to a close friend in this same situation? Offer those words to yourself.'}
+  ];
+  
+  let si = 0;
+  function renderSCStep(){
+    if(si>=steps.length){ showComplete(c, S.kids ? 'You were so kind to yourself. That takes real courage.' : 'Self-compassion is not self-indulgence — it is wisdom.'); return; }
+    const s = steps[si];
+    const dots = steps.map((_,i)=>`<div class="tool-dot ${i<si?'done':''} ${i===si?'active':''}"></div>`).join('');
+    c.innerHTML = `<div class="sc-step">
+      <div class="tool-progress">${dots}</div>
+      <div class="sc-icon">${s.icon}</div>
+      <p class="sc-phrase">${s.phrase}</p>
+      <p class="sc-explain">${s.explain}</p>
+      <button class="btn btn-em" style="margin-top:32px" onclick="nextSC()">${si < steps.length-1 ? (S.kids ? 'Next' : 'Continue') : (S.kids ? 'Done!' : 'Complete')}</button>
+    </div>`;
+  }
+  window.nextSC = () => { si++; renderSCStep(); };
+  renderSCStep();
+}
+
+// ── TOOL: Savoring ──
+function renderSavoring(c){
+  const prompts = S.kids ? [
+    {sense:'See',emoji:'&#128064;',q:'Look around. What\'s the nicest thing you can see right now?'},
+    {sense:'Hear',emoji:'&#128066;',q:'Close your eyes. What\'s a nice sound you can hear?'},
+    {sense:'Feel',emoji:'&#9995;',q:'Touch something nearby. What does it feel like?'},
+    {sense:'Breathe',emoji:'&#128067;',q:'Take a big sniff. Can you smell anything nice?'},
+    {sense:'Remember',emoji:'&#128156;',q:'Think of your favourite happy moment. Hold onto it!'}
+  ] : [
+    {sense:'Sight',emoji:'&#128064;',q:'What is the most pleasing thing in your visual field right now? Study it. Notice colours, light, texture.'},
+    {sense:'Sound',emoji:'&#128066;',q:'Close your eyes. Isolate one pleasant or interesting sound. Let it fill your attention.'},
+    {sense:'Touch',emoji:'&#9995;',q:'Notice the physical sensations where your body meets the world. Temperature, texture, pressure.'},
+    {sense:'Scent',emoji:'&#128067;',q:'Breathe deeply. Is there a scent you can notice? Even subtle — fresh air, coffee, rain?'},
+    {sense:'Amplify',emoji:'&#128156;',q:'Hold this positive moment. Imagine it spreading warmth through your chest. You are allowed to feel good.'}
+  ];
+  
+  let pi = 0;
+  function renderSavStep(){
+    if(pi>=prompts.length){ showComplete(c, S.kids ? 'You made that good feeling even BIGGER!' : 'Savoring amplifies positive neurochemistry. The more you practice, the more natural it becomes.'); return; }
+    const p = prompts[pi];
+    const dots = prompts.map((_,i)=>`<div class="tool-dot ${i<pi?'done':''} ${i===pi?'active':''}"></div>`).join('');
+    c.innerHTML = `<div class="tool-step">
+      <div class="tool-progress">${dots}</div>
+      <p style="font-size:2.5rem;margin-bottom:8px">${p.emoji}</p>
+      <p style="font-weight:600;margin-bottom:4px;font-size:0.8125rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted)">${p.sense}</p>
+      <p class="tool-prompt">${p.q}</p>
+      <p style="color:var(--muted);font-size:0.8125rem;margin-bottom:20px">${S.kids ? 'Take your time. Then tap next.' : 'Sit with this for 15-20 seconds.'}</p>
+      <button class="btn btn-em" onclick="nextSav()">${pi < prompts.length-1 ? 'Next' : (S.kids ? 'Done!' : 'Complete')}</button>
+    </div>`;
+  }
+  window.nextSav = () => { pi++; renderSavStep(); };
+  renderSavStep();
+}
+
+// ── TOOL: Gratitude Moment ──
+function renderGratitude(c){
+  c.innerHTML = `<div class="tool-step">
+    <p style="font-size:2.5rem;margin-bottom:12px">&#128156;</p>
+    <p class="tool-prompt">${S.kids ? 'Name 3 things that make you smile!' : 'Name three things you\'re genuinely grateful for right now.'}</p>
+    <p class="tool-sub">${S.kids ? 'They can be big or tiny!' : 'They don\'t need to be significant. Small, specific things work best.'}</p>
+    <div style="display:flex;flex-direction:column;gap:10px;width:100%;margin-bottom:24px">
+      <input type="text" class="tool-input" style="min-height:auto;padding:12px 16px" placeholder="${S.kids ? '1. Something that made me happy...' : '1. I\'m grateful for...'}" id="g1">
+      <input type="text" class="tool-input" style="min-height:auto;padding:12px 16px" placeholder="${S.kids ? '2. Someone I appreciate...' : '2. I appreciate...'}" id="g2">
+      <input type="text" class="tool-input" style="min-height:auto;padding:12px 16px" placeholder="${S.kids ? '3. Something nice today...' : '3. I\'m thankful for...'}" id="g3">
+    </div>
+    <button class="btn btn-em" onclick="submitGratitude()">Done</button>
+  </div>`;
+}
+
+window.submitGratitude = () => {
+  const c = document.getElementById('toolContent');
+  showComplete(c, S.kids ? 'Your heart is full of good things!' : 'Gratitude rewires attention toward what sustains you. This shift compounds over time.');
+};
+
+// ── TOOL: Sharing ──
+function renderSharing(c){
+  c.innerHTML = `<div class="tool-step">
+    <p style="font-size:2.5rem;margin-bottom:12px">&#128172;</p>
+    <p class="tool-prompt">${S.kids ? 'Good feelings get BIGGER when you share them!' : 'Positive emotions are amplified through social sharing.'}</p>
+    <p class="tool-sub" style="text-align:left">${S.kids ? 
+      'Here are some ideas:<br><br>&#127775; Tell someone about your good feeling<br>&#127775; Draw a picture about it<br>&#127775; Do a happy dance with someone<br>&#127775; Write it in a journal or diary<br>&#127775; Call someone you love' : 
+      'Research shows that sharing positive experiences — called "capitalisation" — strengthens both the emotion and the relationship.<br><br>Consider:<br><br>&#8226; Text or call someone about what happened<br>&#8226; Write it down to revisit later<br>&#8226; Share with someone who will celebrate with you<br>&#8226; Record a voice memo to capture how you feel<br>&#8226; Express it creatively — write, draw, compose'}</p>
+    <button class="btn btn-em" style="margin-top:16px" onclick="closeTool()">Got it</button>
+  </div>`;
+}
+
+// ── TOOL: Cognitive Reframing ──
+function renderReframe(c){
+  const steps = S.kids ? [
+    {label:'What happened?',prompt:'Tell me what happened — like you\'re telling a story.',placeholder:'Something happened and I felt...'},
+    {label:'What\'s your brain saying?',prompt:'What is the thought that keeps popping up?',placeholder:'My brain keeps saying...'},
+    {label:'Detective time!',prompt:'Is there any proof this thought is 100% true? What would your best friend say?',placeholder:'Well, actually...'},
+    {label:'New thought!',prompt:'What\'s a kinder, fairer way to think about this?',placeholder:'Maybe what\'s really true is...'}
+  ] : [
+    {label:'Situation',prompt:'Describe the situation factually. What happened?',placeholder:'What actually occurred, without interpretation...'},
+    {label:'Automatic thought',prompt:'What thought fired automatically? What did your mind tell you this means?',placeholder:'The thought that came up was...'},
+    {label:'Evidence check',prompt:'What evidence supports this thought? What evidence challenges it? What would you tell a friend?',placeholder:'The evidence for this thought is... But against it...'},
+    {label:'Balanced perspective',prompt:'What is a more balanced, accurate way to view this situation?',placeholder:'A more balanced perspective would be...'}
+  ];
+  
+  let ri=0; const answers=[];
+  function renderRStep(){
+    if(ri>=steps.length){
+      showComplete(c, S.kids ? 'Great detective work! You found a better thought.' : 'Cognitive restructuring weakens distorted thought patterns through evidence-based challenge. Practice builds automatic reappraisal.');
+      return;
+    }
+    const s = steps[ri];
+    const dots = steps.map((_,i)=>`<div class="tool-dot ${i<ri?'done':''} ${i===ri?'active':''}"></div>`).join('');
+    c.innerHTML = `<div class="tool-step" style="text-align:left">
+      <div class="tool-progress">${dots}</div>
+      <p class="reframe-label">${S.kids ? `Step ${ri+1}` : `Step ${ri+1} of 4`}</p>
+      <p class="tool-prompt">${s.prompt}</p>
+      <textarea class="tool-input" placeholder="${s.placeholder}" id="rfInput">${answers[ri]||''}</textarea>
+      <div class="tool-nav">
+        ${ri>0 ? `<button class="btn btn-s" onclick="prevRF()">Back</button>` : ''}
+        <button class="btn btn-em" onclick="nextRF()">${ri<steps.length-1 ? 'Next' : (S.kids ? 'Done!' : 'Complete')}</button>
+      </div>
+    </div>`;
+  }
+  window.nextRF = () => { answers[ri]=document.getElementById('rfInput').value; ri++; renderRStep(); };
+  window.prevRF = () => { answers[ri]=document.getElementById('rfInput').value; ri--; renderRStep(); };
+  renderRStep();
+}
+
+// ── TOOL: Opposite Action ──
+function renderOppositeAction(c){
+  const em = EMOTIONS[S.emotion];
+  const urges = {
+    anger:{urge:'attack, raise your voice, or confront',opposite:'speak gently, take space, or do something kind',kidUrge:'yell, hit, or say mean things',kidOpp:'use a quiet voice, walk away calmly, or do something gentle'},
+    frustration:{urge:'force the issue or give up entirely',opposite:'take a break, try a different approach, or ask for help',kidUrge:'throw things or quit',kidOpp:'take a break, try it a different way, or ask for help'},
+    fear:{urge:'avoid, escape, or freeze',opposite:'approach the situation gradually and stay present',kidUrge:'run away or hide',kidOpp:'take one tiny brave step closer'},
+    anxiety:{urge:'avoid, seek reassurance, or control',opposite:'approach what you\'re avoiding, tolerate uncertainty',kidUrge:'not go, ask "is it OK?" over and over, or worry more',kidOpp:'try the thing anyway, tell yourself "I can handle this"'},
+    sadness:{urge:'withdraw, isolate, or go inactive',opposite:'reach out, move your body, or engage in something meaningful',kidUrge:'stay in bed, be alone, or stop doing fun things',kidOpp:'call a friend, go outside, or do something you usually enjoy'},
+    grief:{urge:'isolate and shut down',opposite:'gently connect with someone who understands, and allow the waves',kidUrge:'hide and be alone with the hurt',kidOpp:'let someone sit with you, even quietly'},
+    shame:{urge:'hide, withdraw, or attack yourself',opposite:'share your experience with someone safe, act with integrity',kidUrge:'hide away and keep it secret',kidOpp:'tell someone you trust — they won\'t think less of you'},
+    guilt:{urge:'punish yourself or avoid the person',opposite:'make amends or accept what can\'t be changed',kidUrge:'feel bad forever or hide from the person',kidOpp:'say sorry and try to make it right'},
+    embarrassment:{urge:'disappear or replay the moment',opposite:'stay present, maybe even laugh about it',kidUrge:'wish you could vanish',kidOpp:'laugh it off — everyone has silly moments!'},
+    disgust:{urge:'avoid and reject',opposite:'approach with curiosity or tolerance',kidUrge:'push it away and say YUCK',kidOpp:'take a breath and look again more calmly'},
+    loneliness:{urge:'withdraw further or believe no one cares',opposite:'reach out, initiate contact, or go where people are',kidUrge:'think nobody likes you and stay alone',kidOpp:'ask someone to play, or tell a grown-up how you feel'},
+    overwhelm:{urge:'shut down or try to do everything at once',opposite:'do one single small thing, then rest',kidUrge:'freeze up or cry because it\'s too much',kidOpp:'pick just ONE thing. Only one. That\'s enough.'},
+    envy:{urge:'compare and criticise yourself or others',opposite:'celebrate their success and identify your own values',kidUrge:'say "it\'s not fair" and feel bad',kidOpp:'think about what YOU\'re good at and what makes you special'}
+  };
+  
+  const u = urges[S.emotion] || urges.anxiety;
+  c.innerHTML = `<div class="tool-step">
+    <p class="tool-sub">${S.kids ? 'When a feeling wants you to do one thing, sometimes doing the OPPOSITE helps!' : 'When an emotion\'s action urge is unhelpful, deliberately acting opposite can shift the entire emotional experience.'}</p>
+    <div class="oa-card">
+      <p class="oa-label">${S.kids ? 'The feeling wants you to...' : 'The urge'}</p>
+      <p class="oa-text" style="color:${em.color}">${S.kids ? u.kidUrge : u.urge}</p>
+    </div>
+    <div class="oa-arrow">&#8595;</div>
+    <div class="oa-card" style="border-color:var(--em-c)">
+      <p class="oa-label">${S.kids ? 'Try the switcheroo!' : 'The opposite action'}</p>
+      <p class="oa-text">${S.kids ? u.kidOpp : u.opposite}</p>
+    </div>
+    <p style="color:var(--muted);font-size:0.8125rem;margin-top:16px;line-height:1.5">${S.kids ? 'You don\'t have to do it perfectly. Even a tiny switcheroo counts!' : 'Commit to the opposite action fully — body language, tone, and behaviour. Half-measures are less effective.'}</p>
+    <button class="btn btn-em" style="margin-top:20px" onclick="closeTool()">${S.kids ? 'I\'ll try it!' : 'Got it'}</button>
+  </div>`;
+}
+
+// ── TOOL: Thought Defusion ──
+function renderDefusion(c){
+  c.innerHTML = `<div class="tool-step">
+    <p style="font-size:2.5rem;margin-bottom:12px">${S.kids ? '&#9729;' : '&#127811;'}</p>
+    <p class="tool-prompt">${S.kids ? 'What thought keeps bugging you?' : 'What is the difficult thought?'}</p>
+    <p class="tool-sub">${S.kids ? 'Type it out below — we\'re going to put it on a cloud.' : 'Write the thought that\'s hooked you. We\'ll create some distance from it.'}</p>
+    <textarea class="tool-input" placeholder="${S.kids ? 'The thought that won\'t go away is...' : 'The thought I\'m fused with is...'}" id="defInput" style="margin-bottom:20px"></textarea>
+    <button class="btn btn-em" onclick="defuse()">Transform it</button>
+  </div>`;
+}
+
+window.defuse = () => {
+  const thought = document.getElementById('defInput').value || (S.kids ? "I'm not good enough" : "I'm not good enough");
+  const c = document.getElementById('toolContent');
+  c.innerHTML = `<div class="tool-step" style="animation:fadeUp 0.4s ease-out">
+    <p style="font-size:2.5rem;margin-bottom:16px">${S.kids ? '&#9729;' : '&#127811;'}</p>
+    <p style="color:var(--muted);font-size:0.8125rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">${S.kids ? 'The old way' : 'Fused'}</p>
+    <p style="font-family:var(--font-d);font-size:1.25rem;margin-bottom:24px;opacity:0.5;text-decoration:line-through">${thought}</p>
+    <p style="color:var(--em-c);font-size:0.8125rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">${S.kids ? 'The cloud way' : 'Defused'}</p>
+    <p style="font-family:var(--font-d);font-size:1.25rem;margin-bottom:12px">${S.kids ? `I notice my brain is saying "${thought}"` : `I\'m having the thought that "${thought}"`}</p>
+    <p style="color:var(--text2);font-size:0.875rem;line-height:1.6;margin-bottom:24px;max-width:360px;margin-left:auto;margin-right:auto">${S.kids ? 
+      'See? The thought is still there, but now YOU\'RE the one watching it — like watching a cloud float by. You\'re the whole big sky. The thought is just one little cloud.' : 
+      'The thought hasn\'t changed. But your relationship to it has. You are the observer, not the thought. Thoughts are mental events — not facts, not commands, not you.'}</p>
+    <button class="btn btn-em" onclick="closeTool()">${S.kids ? 'I am the sky!' : 'I understand'}</button>
+  </div>`;
+};
+
+// ── TOOL: Values Compass ──
+function renderValuesCompass(c){
+  const values = S.kids ? [
+    {emoji:'&#128106;',name:'Family & Friends',q:'Who do I love the most?'},
+    {emoji:'&#127891;',name:'Learning',q:'What do I want to get better at?'},
+    {emoji:'&#127918;',name:'Fun & Play',q:'What makes me laugh and smile?'},
+    {emoji:'&#128170;',name:'Being Brave',q:'When was I brave and it felt good?'},
+    {emoji:'&#128156;',name:'Being Kind',q:'How can I help someone today?'},
+    {emoji:'&#127912;',name:'Creating',q:'What do I love to make or build?'}
+  ] : [
+    {emoji:'&#128106;',name:'Connection',q:'Who matters most? Are you nurturing those relationships?'},
+    {emoji:'&#127793;',name:'Growth',q:'What are you learning or developing? Does your current path support it?'},
+    {emoji:'&#127775;',name:'Purpose',q:'What gives your life meaning? Are you moving toward or away from it?'},
+    {emoji:'&#129504;',name:'Health',q:'Are you caring for your body and mind? What does that look like today?'},
+    {emoji:'&#127912;',name:'Creativity',q:'Are you making space for expression and imagination?'},
+    {emoji:'&#128170;',name:'Courage',q:'What would you do if you weren\'t afraid? Can you take one step toward it?'}
+  ];
+  
+  let vi = 0;
+  function renderVStep(){
+    if(vi>=values.length){ showComplete(c, S.kids ? 'Now you know what matters most to you. That\'s your superpower!' : 'Values don\'t eliminate pain — they give direction through it. One value-aligned step today is enough.'); return; }
+    const v = values[vi];
+    const dots = values.map((_,i)=>`<div class="tool-dot ${i<vi?'done':''} ${i===vi?'active':''}"></div>`).join('');
+    c.innerHTML = `<div class="tool-step">
+      <div class="tool-progress">${dots}</div>
+      <p style="font-size:2.5rem;margin-bottom:8px">${v.emoji}</p>
+      <p style="font-weight:600;margin-bottom:4px">${v.name}</p>
+      <p class="tool-prompt">${v.q}</p>
+      <div class="tool-nav">
+        <button class="btn btn-s" onclick="skipV()">Skip</button>
+        <button class="btn btn-em" onclick="nextV()">${S.kids ? 'This one!' : 'This resonates'}</button>
+      </div>
+    </div>`;
+  }
+  window.nextV = () => {
+    const c2 = document.getElementById('toolContent');
+    showComplete(c2, S.kids ? `${values[vi].name} is your compass today! What\'s one thing you can do for it?` : `"${values[vi].name}" — let this guide your next decision. What is one small, value-aligned action you can take today?`);
+  };
+  window.skipV = () => { vi++; renderVStep(); };
+  renderVStep();
+}
+
+// ── TOOL: Tiny Step / Activation ──
+function renderActivation(c){
+  const suggestions = S.kids ? [
+    'Stand up and stretch for 10 seconds',
+    'Drink a glass of water',
+    'Draw a quick picture',
+    'Walk to the window and look outside',
+    'Tidy one small thing',
+    'Do 5 jumping jacks'
+  ] : [
+    'Stand up and move for 60 seconds',
+    'Send one text message to someone',
+    'Drink a full glass of water',
+    'Step outside for 2 minutes of fresh air',
+    'Write one sentence about how you feel',
+    'Complete one small task you\'ve been avoiding',
+    'Tidy one visible surface',
+    'Open the blinds or curtains'
+  ];
+  
+  c.innerHTML = `<div class="tool-step">
+    <p style="font-size:2.5rem;margin-bottom:12px">${S.kids ? '&#127939;' : '&#128099;'}</p>
+    <p class="tool-prompt">${S.kids ? 'Pick ONE tiny thing and do it right now!' : 'Inertia breaks with a single movement. Pick one tiny step.'}</p>
+    <p class="tool-sub">${S.kids ? 'Here are some ideas — or make up your own!' : 'The goal isn\'t productivity. It\'s momentum. Completion triggers dopamine, which fuels the next step.'}</p>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:24px">
+      ${suggestions.map(s => `<button class="ground-item" onclick="this.classList.toggle('checked')">${s}</button>`).join('')}
+    </div>
+    <button class="btn btn-em" onclick="completeActivation()">I did one!</button>
+  </div>`;
+}
+
+window.completeActivation = () => {
+  showComplete(document.getElementById('toolContent'), S.kids ? 'You did it! That tiny step just proved you CAN do things, even when it\'s hard!' : 'One step taken. That\'s enough. Momentum is not about speed — it\'s about direction.');
+};
+
+// ── Completion Screen ──
+function showComplete(container, message){
+  container.innerHTML = `<div class="complete-wrap">
+    <div class="complete-check">&#10003;</div>
+    <p class="complete-title">${S.kids ? 'Amazing!' : 'Well done'}</p>
+    <p class="complete-sub">${message}</p>
+    <button class="btn btn-em" style="margin-top:28px" onclick="closeTool()">${S.kids ? 'Thanks!' : 'Close'}</button>
+  </div>`;
+}
+
+// ── Initialize ──
+init();
+</script>
+</body>
+</html>
