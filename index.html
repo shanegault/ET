@@ -36,9 +36,9 @@ textarea,input{font-family:inherit;border:none;background:none;color:inherit;out
 .app{position:relative;min-height:100vh;min-height:100dvh}
 .orbs{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
 .orb{position:absolute;border-radius:50%;filter:blur(100px);animation:float 25s ease-in-out infinite;transition:all 2s ease-in-out}
-.orb-1{width:500px;height:500px;top:-150px;left:-100px;background:linear-gradient(135deg,#FF6B6B,#FF8E53);opacity:0.15;transition:background 1.8s ease-in-out,opacity 1.8s ease-in-out}
-.orb-2{width:400px;height:400px;top:40%;right:-100px;background:linear-gradient(135deg,#4ECDC4,#44A3AA);opacity:0.12;animation-delay:-9s;transition:background 1.8s ease-in-out,opacity 1.8s ease-in-out}
-.orb-3{width:450px;height:450px;bottom:-100px;left:30%;background:linear-gradient(135deg,#A78BFA,#8B5CF6);opacity:0.13;animation-delay:-17s;transition:background 1.8s ease-in-out,opacity 1.8s ease-in-out}
+.orb-1{width:500px;height:500px;top:-150px;left:-100px;background:linear-gradient(135deg,#FF6B6B,#FF8E53);opacity:0.28;transition:background 1.8s ease-in-out,opacity 1.8s ease-in-out}
+.orb-2{width:400px;height:400px;top:40%;right:-100px;background:linear-gradient(135deg,#4ECDC4,#44A3AA);opacity:0.24;animation-delay:-9s;transition:background 1.8s ease-in-out,opacity 1.8s ease-in-out}
+.orb-3{width:450px;height:450px;bottom:-100px;left:30%;background:linear-gradient(135deg,#A78BFA,#8B5CF6);opacity:0.26;animation-delay:-17s;transition:background 1.8s ease-in-out,opacity 1.8s ease-in-out}
 
 /* Header */
 .header{display:flex;justify-content:space-between;align-items:center;padding:16px 20px 24px;position:sticky;top:0;z-index:100;background:linear-gradient(to bottom,var(--bg) 60%,transparent)}
@@ -81,6 +81,8 @@ textarea,input{font-family:inherit;border:none;background:none;color:inherit;out
 .btn-p{background:#fff;color:#0a0a0f;box-shadow:0 8px 30px rgba(255,255,255,0.08)}
 .btn-p:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 12px 40px rgba(255,255,255,0.15)}
 .btn-p:disabled{background:rgba(255,255,255,0.08);color:var(--muted);box-shadow:none}
+.btn-p.live{color:#fff;box-shadow:0 8px 30px var(--em-g);transition:background 0.6s ease-in-out,box-shadow 0.6s ease-in-out}
+.btn-p.live:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 12px 40px var(--em-g)}
 .btn-s{background:var(--card);color:var(--text2);border:1px solid var(--border)}
 .btn-s:hover{background:var(--card-h);color:var(--text)}
 .btn-em{background:var(--em-c);color:#fff;box-shadow:0 8px 30px var(--em-g)}
@@ -120,10 +122,10 @@ textarea,input{font-family:inherit;border:none;background:none;color:inherit;out
 .tool-arrow{color:var(--muted);font-size:0.75rem;flex-shrink:0}
 
 /* Modal */
-.modal-o{position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);z-index:200;display:none;align-items:flex-end;justify-content:center;padding:0;opacity:0;transition:opacity 0.3s}
+.modal-o{position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);z-index:200;display:none;align-items:center;justify-content:center;padding:16px;opacity:0;transition:opacity 0.3s}
 .modal-o.active{display:flex;opacity:1}
-.modal{background:#111114;border:1px solid rgba(255,255,255,0.08);border-bottom:none;border-radius:24px 24px 0 0;width:100%;max-width:560px;max-height:92vh;max-height:92dvh;overflow-y:auto;position:relative;animation:slideUp 0.3s ease-out}
-.modal-h{padding:16px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(17,17,20,0.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:10;border-radius:24px 24px 0 0}
+.modal{background:#111114;border:1px solid rgba(255,255,255,0.08);border-radius:24px;width:100%;max-width:560px;max-height:92vh;max-height:92dvh;overflow-y:auto;position:relative;animation:slideUp 0.3s ease-out}
+.modal-h{padding:16px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(17,17,20,0.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:10;border-radius:24px 24px 0 0;overflow:hidden}
 .modal-x{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:0.875rem;transition:background 0.15s}
 .modal-x:hover{background:rgba(255,255,255,0.15)}
 .modal-b{padding:24px 20px 40px;min-height:300px}
@@ -222,7 +224,7 @@ textarea,input{font-family:inherit;border:none;background:none;color:inherit;out
      ═══════════════════════════════════════════════════════════ -->
   <header class="header">
     <div class="logo" onclick="goHome()">
-      <svg viewBox="0 0 448.2 450.73"><path fill="#fff" d="M113.86,140.54h94.14c1.83,0,3.32,1.49,3.32,3.32v4.43c0,1.83-1.49,3.32-3.32,3.32h-81.29c-1.83,0-3.32,1.49-3.32,3.32v63.12c0,1.83,1.49,3.32,3.32,3.32h67.2c1.83,0,3.32,1.49,3.32,3.32v4.43c0,1.83-1.49,3.32-3.32,3.32h-67.2c-1.83,0-3.32,1.49-3.32,3.32v74.58c0,1.83,1.49,3.32,3.32,3.32h84.08c1.83,0,3.32,1.49,3.32,3.32v4.43c0,1.83-1.49,3.32-3.32,3.32h-96.94c-1.83,0-3.32-1.49-3.32-3.32v-177.54c0-1.83,1.49-3.32,3.32-3.32Z"/><path fill="#fff" d="M290.85,151.6h-52c-1.83,0-3.32-1.49-3.32-3.32v-4.43c0-1.83,1.49-3.32,3.32-3.32h123.49c1.83,0,3.32,1.49,3.32,3.32v4.43c0,1.83-1.49,3.32-3.32,3.32h-52c-1.83,0-3.32,1.49-3.32,3.32v166.48c0,1.83-1.49,3.32-3.32,3.32h-6.22c-1.83,0-3.32-1.49-3.32-3.32v-166.48c0-1.83-1.49-3.32-3.32-3.32Z"/><path fill="#fff" d="M448.2,226.63c0,7.64-.39,15.34-1.15,22.9-.76,7.45-1.9,14.93-3.4,22.25-1.48,7.22-3.34,14.45-5.52,21.48-2.17,6.96-4.71,13.89-7.54,20.6-2.81,6.65-5.99,13.24-9.44,19.59-3.43,6.31-7.21,12.53-11.23,18.48-4,5.93-8.34,11.73-12.9,17.25-4.54,5.51-9.41,10.86-14.46,15.91-5.04,5.05-10.4,9.91-15.9,14.46-5.52,4.56-11.33,8.9-17.25,12.9-5.95,4.02-12.17,7.8-18.48,11.22-6.35,3.45-12.94,6.63-19.59,9.44-6.72,2.84-13.65,5.38-20.6,7.54-7.03,2.19-14.26,4.05-21.49,5.52-7.31,1.5-14.8,2.65-22.25,3.4-7.55.77-15.25,1.16-22.9,1.16s-15.35-.39-22.9-1.16c-7.44-.75-14.93-1.9-22.25-3.4-7.22-1.47-14.45-3.33-21.48-5.52-6.96-2.16-13.89-4.7-20.6-7.54-6.65-2.81-13.24-5.99-19.59-9.44-6.32-3.43-12.53-7.2-18.48-11.22-5.93-4.01-11.73-8.35-17.25-12.9-5.51-4.55-10.86-9.41-15.91-14.46-5.05-5.05-9.91-10.4-14.46-15.91-4.55-5.51-8.89-11.31-12.9-17.25-4.02-5.95-7.8-12.17-11.22-18.47-3.45-6.36-6.63-12.95-9.44-19.6-2.84-6.71-5.38-13.64-7.54-20.6-2.19-7.02-4.04-14.25-5.52-21.48-1.5-7.32-2.64-14.8-3.4-22.25-.77-7.56-1.16-15.26-1.16-22.9s.39-15.34,1.16-22.9c.76-7.45,1.9-14.93,3.4-22.25,1.48-7.23,3.33-14.46,5.52-21.49,2.16-6.95,4.7-13.88,7.54-20.59,2.81-6.65,5.99-13.25,9.44-19.6,3.42-6.3,7.2-12.52,11.22-18.47,4.01-5.93,8.35-11.74,12.9-17.25s9.41-10.86,14.46-15.91c5.05-5.05,10.4-9.92,15.91-14.46,5.52-4.56,11.32-8.89,17.25-12.9,5.95-4.02,12.16-7.8,18.48-11.23,6.35-3.45,12.94-6.62,19.59-9.43,5.25-2.22,10.63-4.25,16.05-6.07,1.37-.46,2.18-1.85,1.89-3.26l-1.54-7.4c-.44-2.14,1.59-3.95,3.66-3.27l40.78,13.45c2.07.68,2.63,3.35,1,4.81l-32.04,28.59c-1.63,1.45-4.22.6-4.66-1.54l-1.32-6.35c-.35-1.69-2.11-2.67-3.74-2.09-3.75,1.33-7.47,2.77-11.12,4.32-5.96,2.52-11.88,5.37-17.58,8.47-5.66,3.07-11.24,6.46-16.57,10.07-5.33,3.59-10.54,7.49-15.49,11.58-4.95,4.08-9.75,8.45-14.29,12.98-4.53,4.54-8.9,9.34-12.98,14.29-4.09,4.95-7.98,10.16-11.58,15.48-3.61,5.35-7,10.93-10.07,16.58-3.1,5.7-5.95,11.61-8.47,17.58-2.54,6.01-4.82,12.23-6.76,18.46-1.96,6.31-3.62,12.79-4.95,19.27-1.34,6.56-2.37,13.28-3.05,19.96-.69,6.79-1.04,13.72-1.04,20.58s.35,13.78,1.04,20.57c.68,6.69,1.71,13.4,3.05,19.97,1.33,6.48,2.99,12.96,4.95,19.26,1.94,6.24,4.22,12.45,6.76,18.47,2.52,5.96,5.37,11.88,8.47,17.58,3.07,5.65,6.46,11.23,10.07,16.58,3.6,5.32,7.5,10.53,11.58,15.48s8.45,9.75,12.98,14.29c4.54,4.53,9.34,8.9,14.29,12.98,4.95,4.09,10.16,7.98,15.48,11.58,5.34,3.61,10.92,7,16.58,10.07,5.7,3.1,11.62,5.95,17.58,8.47,6.02,2.55,12.23,4.82,18.47,6.76,6.31,1.96,12.79,3.63,19.26,4.95,6.57,1.35,13.28,2.37,19.97,3.05,13.56,1.38,27.59,1.38,41.15,0,6.68-.68,13.4-1.7,19.96-3.05,6.48-1.32,12.96-2.99,19.27-4.95,6.23-1.94,12.44-4.21,18.47-6.76,5.96-2.52,11.87-5.37,17.57-8.47,5.66-3.07,11.24-6.46,16.58-10.07,5.32-3.59,10.53-7.49,15.48-11.58,4.95-4.08,9.76-8.45,14.29-12.98,4.53-4.54,8.9-9.34,12.99-14.29,4.09-4.96,7.98-10.16,11.57-15.48,3.61-5.35,7-10.93,10.08-16.58,3.09-5.7,5.94-11.62,8.46-17.58,2.55-6.01,4.82-12.23,6.76-18.47,1.96-6.3,3.63-12.78,4.96-19.26,1.34-6.57,2.36-13.28,3.04-19.97.69-6.79,1.04-13.71,1.04-20.57s-.35-13.79-1.04-20.58c-.68-6.68-1.7-13.4-3.04-19.96-1.33-6.48-3-12.96-4.96-19.27-1.94-6.23-4.21-12.45-6.76-18.46-2.52-5.96-5.37-11.88-8.46-17.58-3.08-5.66-6.47-11.24-10.08-16.58-3.59-5.31-7.48-10.52-11.58-15.48-4.08-4.95-8.45-9.76-12.98-14.29-4.53-4.53-9.34-8.9-14.29-12.98-4.95-4.09-10.16-7.99-15.48-11.58-5.34-3.61-10.92-7-16.58-10.07-5.7-3.1-11.61-5.95-17.57-8.47-6.03-2.55-12.24-4.82-18.47-6.76-6.31-1.96-12.79-3.63-19.27-4.95-6.56-1.35-13.28-2.37-19.96-3.05-5.86-.6-11.82-.94-17.77-1.02-1.56-.02-2.81-1.27-2.81-2.83V5.39c0-1.57,1.28-2.86,2.86-2.84,6.71.08,13.43.47,20.04,1.14,7.45.75,14.94,1.9,22.25,3.39,7.23,1.48,14.46,3.34,21.49,5.53,6.95,2.16,13.88,4.7,20.6,7.54,6.65,2.81,13.24,5.98,19.59,9.43,6.31,3.43,12.53,7.21,18.48,11.23,5.92,4,11.73,8.34,17.25,12.9,5.5,4.54,10.86,9.41,15.9,14.46,5.05,5.05,9.92,10.4,14.46,15.91,4.56,5.52,8.9,11.33,12.9,17.25,4.02,5.95,7.8,12.17,11.23,18.47,3.45,6.36,6.63,12.95,9.44,19.6,2.83,6.71,5.37,13.64,7.53,20.59,2.19,7.04,4.05,14.27,5.53,21.49,1.5,7.32,2.64,14.8,3.4,22.25.76,7.56,1.15,15.26,1.15,22.9Z"/></svg>
+      <svg viewBox="0 0 489.47 501.18" xmlns="http://www.w3.org/2000/svg"><path fill="#fff" d="M244.73,5c3.87,0,7.73,1.88,10.01,5.63l2.89,4.76c10.46,17.19,28.73,26.63,47.41,26.63,10.33,0,20.78-2.88,30.1-8.93l4.67-3.03c2.01-1.3,4.21-1.9,6.35-1.9,5.71,0,11.07,4.23,11.69,10.59l.54,5.54c2.81,28.7,27,50.02,55.08,50.02,2.34,0,4.7-.15,7.08-.45l5.52-.7c.52-.07,1.03-.1,1.53-.1,7.96,0,13.8,8,10.95,15.76l-1.92,5.23c-10.74,29.33,4.87,61.74,34.5,71.63l5.28,1.76c8.33,2.78,10.76,13.4,4.46,19.53l-3.99,3.88c-22.4,21.77-22.4,57.74,0,79.51l3.99,3.88c6.3,6.12,3.88,16.74-4.46,19.53l-5.28,1.76c-29.63,9.89-45.24,42.3-34.5,71.63l1.92,5.23c2.84,7.76-3,15.76-10.95,15.76-.5,0-1.01-.03-1.53-.1l-5.52-.7c-2.38-.3-4.74-.45-7.08-.45-28.08,0-52.27,21.32-55.08,50.02l-.54,5.54c-.62,6.36-5.98,10.59-11.69,10.59-2.14,0-4.34-.6-6.35-1.9l-4.67-3.03c-9.33-6.05-19.78-8.93-30.1-8.93-18.68,0-36.95,9.44-47.41,26.63l-2.89,4.76c-2.28,3.75-6.15,5.63-10.01,5.63s-7.73-1.88-10.01-5.63l-2.89-4.76c-10.46-17.19-28.73-26.63-47.41-26.63-10.33,0-20.78,2.88-30.1,8.93l-4.67,3.03c-2.01,1.3-4.21,1.9-6.35,1.9-5.71,0-11.07-4.23-11.69-10.59l-.54-5.54c-2.81-28.7-27-50.02-55.08-50.02-2.34,0-4.7.15-7.08.45l-5.52.7c-.52.07-1.03.1-1.53.1-7.96,0-13.8-8-10.95-15.76l1.92-5.23c10.74-29.33-4.87-61.74-34.5-71.63l-5.28-1.76c-8.33-2.78-10.76-13.4-4.46-19.53l3.99-3.88c22.4-21.77,22.4-57.74,0-79.51l-3.99-3.88c-6.3-6.12-3.88-16.74,4.46-19.53l5.28-1.76c29.63-9.89,45.24-42.3,34.5-71.63l-1.92-5.23c-2.84-7.76,3-15.76,10.95-15.76.5,0,1.01.03,1.53.1l5.52.7c2.38.3,4.74.45,7.08.45,28.08,0,52.27-21.32,55.08-50.02l.54-5.54c.62-6.36,5.98-10.59,11.69-10.59,2.14,0,4.34.6,6.35,1.9l4.67,3.03c9.33,6.05,19.78,8.93,30.1,8.93,18.68,0,36.95-9.44,47.41-26.63l2.89-4.76c2.28-3.75,6.15-5.63,10.01-5.63M244.73,0c-5.89,0-11.23,3-14.29,8.03l-2.89,4.76c-9.23,15.17-25.35,24.22-43.14,24.22-9.72,0-19.19-2.81-27.38-8.13l-4.67-3.03c-2.73-1.77-5.87-2.71-9.07-2.71-8.66,0-15.83,6.49-16.67,15.1l-.54,5.54c-1.23,12.56-7.07,24.12-16.43,32.55-9.29,8.36-21.25,12.96-33.67,12.96-2.14,0-4.31-.14-6.45-.41l-5.52-.7c-.72-.09-1.45-.14-2.16-.14-5.42,0-10.53,2.68-13.66,7.16-3.17,4.53-3.89,10.12-1.99,15.32l1.92,5.23c4.73,12.91,4.04,26.83-1.92,39.22-5.96,12.38-16.43,21.6-29.47,25.95l-5.28,1.76c-5.58,1.86-9.7,6.4-11.01,12.14-1.31,5.74.43,11.61,4.65,15.71l3.99,3.88c9.86,9.58,15.29,22.42,15.29,36.17s-5.43,26.59-15.29,36.17l-3.99,3.88c-4.22,4.1-5.96,9.98-4.65,15.71,1.31,5.74,5.42,10.28,11.01,12.14l5.28,1.76c13.04,4.35,23.5,13.57,29.47,25.95,5.96,12.38,6.65,26.31,1.92,39.22l-1.91,5.23c-1.91,5.2-1.18,10.78,1.99,15.32,3.13,4.48,8.24,7.16,13.66,7.16.72,0,1.44-.05,2.16-.14l5.52-.7c2.14-.27,4.31-.41,6.45-.41,12.42,0,24.38,4.6,33.67,12.96,9.37,8.43,15.2,19.99,16.44,32.55l.54,5.54c.84,8.61,8.01,15.1,16.67,15.1,3.2,0,6.34-.94,9.07-2.71l4.67-3.03c8.2-5.32,17.67-8.13,27.38-8.13,17.78,0,33.91,9.06,43.14,24.22l2.89,4.76c3.06,5.03,8.4,8.03,14.29,8.03s11.23-3,14.28-8.03l2.89-4.76c9.23-15.17,25.35-24.23,43.14-24.22,9.72,0,19.19,2.81,27.38,8.13l4.67,3.03c2.73,1.77,5.87,2.71,9.07,2.71,8.66,0,15.83-6.49,16.67-15.1l.54-5.54c1.23-12.56,7.07-24.12,16.43-32.55,9.29-8.36,21.25-12.96,33.67-12.96,2.14,0,4.31.14,6.45.41l5.52.7c.72.09,1.45.14,2.16.14,5.42,0,10.53-2.68,13.66-7.16,3.17-4.53,3.89-10.12,1.99-15.32l-1.92-5.23c-4.73-12.91-4.04-26.83,1.92-39.22,5.96-12.38,16.43-21.6,29.47-25.95l5.28-1.76c5.58-1.86,9.7-6.4,11.01-12.14,1.31-5.74-.43-11.61-4.65-15.71l-3.99-3.88c-9.86-9.58-15.29-22.42-15.29-36.17s5.43-26.59,15.29-36.17l3.99-3.88c4.22-4.1,5.96-9.98,4.65-15.71-1.31-5.74-5.42-10.28-11.01-12.14l-5.28-1.76c-13.04-4.35-23.5-13.57-29.47-25.95-5.96-12.38-6.65-26.31-1.92-39.22l1.92-5.23c1.9-5.2,1.18-10.78-1.99-15.32-3.13-4.48-8.24-7.16-13.66-7.16-.72,0-1.45.05-2.16.14l-5.52.7c-2.14.27-4.31.41-6.45.41-12.42,0-24.38-4.6-33.67-12.96-9.37-8.43-15.2-19.99-16.44-32.55l-.54-5.54c-.84-8.61-8.01-15.1-16.67-15.1-3.2,0-6.34.94-9.07,2.71l-4.67,3.03c-8.2,5.32-17.67,8.13-27.38,8.13-17.78,0-33.91-9.06-43.14-24.22l-2.89-4.76c-3.06-5.03-8.4-8.03-14.28-8.03h0Z"/><path fill="#ff0" d="M244.73,250.58L5.3,195.94c.87-3.77,3.56-7.12,7.72-8.51l5.28-1.77c29.63-9.89,45.24-42.3,34.5-71.63l-1.92-5.23c-1.51-4.12-.57-8.32,1.84-11.34l192.01,153.12Z"/><path fill="#79c314" d="M244.73,250.58L5.3,305.23c-.86-3.76.11-7.95,3.26-11.01l4-3.88c22.4-21.77,22.4-57.74,0-79.51l-4-3.88c-3.15-3.06-4.12-7.25-3.26-11.01l239.43,54.64Z"/><path fill="#487de7" d="M244.73,250.58L52.72,403.71c-2.41-3.02-3.35-7.22-1.84-11.34l1.92-5.23c10.74-29.33-4.87-61.74-34.5-71.63l-5.28-1.77c-4.16-1.39-6.85-4.74-7.72-8.51l239.43-54.65Z"/><path fill="#4b369d" d="M244.73,250.58l-106.55,221.27h0c-3.48-1.67-6.14-5.04-6.57-9.41l-.55-5.55c-3.05-31.08-31.17-53.51-62.16-49.57l-5.52.71c-4.36.56-8.24-1.3-10.65-4.32l192.01-153.13Z"/><path fill="#70369d" d="M244.73,250.58v245.59c-3.87,0-7.73-1.88-10.01-5.63l-2.89-4.75c-16.24-26.69-51.31-34.69-77.52-17.7l-4.67,3.04c-3.68,2.39-7.98,2.4-11.46.72l106.55-221.27Z"/><path fill="none" d="M351.29,471.85c-3.48,1.68-7.77,1.67-11.46-.72l-4.68-3.04c-26.2-16.99-61.27-8.99-77.51,17.7l-2.89,4.75c-2.29,3.76-6.16,5.64-10.02,5.63v-245.59l106.56,221.27Z"/><path fill="none" d="M436.74,403.71c-2.41,3.02-6.29,4.87-10.64,4.32l-5.53-.71c-30.98-3.94-59.11,18.49-62.16,49.57l-.54,5.55c-.43,4.37-3.1,7.74-6.58,9.41l-106.56-221.27,192.01,153.13Z"/><path fill="none" d="M484.16,305.23c-.86,3.77-3.55,7.12-7.71,8.51l-5.28,1.77c-29.63,9.89-45.24,42.3-34.5,71.63l1.91,5.23c1.52,4.13.57,8.32-1.84,11.34l-192.01-153.13,239.43,54.65Z"/><path fill="none" d="M480.9,294.22c3.15,3.06,4.12,7.24,3.26,11.01l-239.43-54.65,239.43-54.64c.86,3.77-.11,7.95-3.26,11.01l-3.99,3.88c-22.4,21.77-22.4,57.74,0,79.51l3.99,3.88Z"/><path fill="none" d="M484.16,195.94l-239.43,54.64,192.01-153.12c2.41,3.02,3.36,7.21,1.84,11.34l-1.91,5.23c-10.74,29.33,4.87,61.74,34.5,71.63l5.28,1.77c4.16,1.39,6.85,4.74,7.71,8.51Z"/><path fill="none" d="M436.74,97.46l-192.01,153.12L351.29,29.32c3.48,1.67,6.15,5.04,6.58,9.41l.54,5.55c3.05,31.08,31.18,53.51,62.16,49.57l5.53-.71c4.35-.55,8.23,1.3,10.64,4.32Z"/><path fill="none" d="M351.29,29.32l-106.56,221.26V5c3.86,0,7.73,1.87,10.02,5.63l2.89,4.75c16.24,26.69,51.31,34.69,77.51,17.7l4.68-3.04c3.69-2.39,7.98-2.4,11.46-.72Z"/><path fill="#e91416" d="M244.73,5v245.58L138.18,29.32c3.48-1.68,7.78-1.67,11.46.72l4.67,3.04c26.21,16.99,61.28,8.99,77.52-17.7l2.89-4.75c2.28-3.76,6.14-5.63,10.01-5.63Z"/><path fill="#fea500" d="M244.73,250.58L52.72,97.46c2.41-3.02,6.29-4.88,10.65-4.32l5.52.71c30.99,3.94,59.11-18.49,62.16-49.57l.55-5.55c.43-4.37,3.09-7.74,6.57-9.41h0l106.55,221.26Z"/></svg>
       <div class="logo-txt"><div class="logo-t">Emotional Taxonomy</div><div class="logo-s">Break the feeling down. Build yourself back up.</div></div>
     </div>
     <div class="h-act">
@@ -480,13 +482,13 @@ const SYMPTOMS = [
   {id:'tense',cat:'body',a:'Muscle tension',k:'Body feels stiff',s:{anger:3,frustration:3,anxiety:2}},
   {id:'heavy',cat:'body',a:'Heaviness in body',k:'Body feels heavy',s:{sadness:3,grief:3,shame:2,loneliness:1}},
   {id:'hot_face',cat:'body',a:'Flushed face / hot cheeks',k:'Hot red face',s:{embarrassment:3,shame:2,anger:2,excitement:1}},
-  {id:'tears',cat:'body',a:'Tearfulness',k:'Want to cry',s:{sadness:3,grief:3,frustration:2,gratitude:1,joy:1}},
+  {id:'tears',cat:'body',a:'Feeling teary / eyes welling up',k:'Want to cry',s:{sadness:3,grief:3,frustration:2,gratitude:1,joy:1}},
   {id:'warmth',cat:'body',a:'Warmth spreading through body',k:'Warm fuzzy feeling',s:{love:3,joy:2,gratitude:2,serenity:1}},
   {id:'light',cat:'body',a:'Lightness / buoyancy',k:'Bouncy light body',s:{joy:3,excitement:2,hope:2,amusement:2}},
   {id:'goosebumps',cat:'body',a:'Goosebumps / chills',k:'Tingly prickly skin',s:{awe:3,fear:1,excitement:1}},
   {id:'nausea',cat:'body',a:'Nausea / stomach churning',k:'Tummy feels sick',s:{disgust:3,anxiety:2,guilt:2,fear:1}},
   {id:'lump_throat',cat:'body',a:'Lump in throat',k:'Something stuck in my throat',s:{grief:3,sadness:2,guilt:2,gratitude:1}},
-  {id:'restless',cat:'body',a:'Restless / fidgety',k:'Can\'t sit still',s:{anxiety:2,excitement:2,boredom:2,frustration:2}},
+  {id:'restless',cat:'body',a:'Fidgety / need to move',k:'Squirmy wiggly feeling',s:{anxiety:2,excitement:2,boredom:2,frustration:2}},
   {id:'clenched',cat:'body',a:'Clenched jaw or fists',k:'Hands in tight fists',s:{anger:3,frustration:2}},
   {id:'butterflies',cat:'body',a:'Butterflies in stomach',k:'Tummy flutters',s:{anxiety:2,excitement:3,love:2}},
   {id:'numb',cat:'body',a:'Numbness / disconnection',k:'Can\'t feel my body',s:{overwhelm:3,grief:2,shame:1}},
@@ -494,11 +496,11 @@ const SYMPTOMS = [
 
   // ── MIND (18) ──
   {id:'looping',cat:'mind',a:'Looping thoughts',k:'Same thought over and over',s:{anxiety:3,guilt:2,shame:2}},
-  {id:'catastrophizing',cat:'mind',a:'Catastrophizing',k:'Thinking the WORST thing',s:{anxiety:3,fear:2}},
-  {id:'fog',cat:'mind',a:'Mental fog / can\'t think clearly',k:'Fuzzy brain',s:{overwhelm:3,confusion:2,sadness:2}},
+  {id:'catastrophizing',cat:'mind',a:'Imagining the worst / catastrophizing',k:'Thinking the WORST thing',s:{anxiety:3,fear:2}},
+  {id:'fog',cat:'mind',a:'Thoughts feel slow / foggy',k:'Brain feels fuzzy and slow',s:{overwhelm:3,confusion:2,sadness:2}},
   {id:'self_critic',cat:'mind',a:'Harsh self-criticism',k:'Being mean to myself',s:{shame:3,guilt:2,sadness:1}},
-  {id:'hopeless',cat:'mind',a:'Hopelessness',k:'It\'ll never get better',s:{sadness:3,grief:2,loneliness:2}},
-  {id:'irritable',cat:'mind',a:'Irritability',k:'Everything is annoying',s:{frustration:3,anger:2,boredom:1}},
+  {id:'hopeless',cat:'mind',a:'"Nothing will get better" thoughts',k:'It\'ll never get better',s:{sadness:3,grief:2,loneliness:2}},
+  {id:'irritable',cat:'mind',a:'Everything feels irritating',k:'Everything is annoying',s:{frustration:3,anger:2,boredom:1}},
   {id:'optimism',cat:'mind',a:'Optimistic thoughts',k:'Good things are coming',s:{hope:3,joy:2,excitement:1}},
   {id:'appreciation',cat:'mind',a:'Noticing what\'s good',k:'Seeing nice things',s:{gratitude:3,serenity:2,awe:1}},
   {id:'curiosity_m',cat:'mind',a:'Curiosity / wonder',k:'I want to know MORE',s:{awe:2,surprise:1,excitement:1,confusion:1}},
@@ -506,23 +508,23 @@ const SYMPTOMS = [
   {id:'replaying',cat:'mind',a:'Replaying events',k:'Can\'t stop thinking about what happened',s:{guilt:3,embarrassment:2,shame:2}},
   {id:'cant_focus',cat:'mind',a:'Can\'t concentrate',k:'Brain won\'t focus',s:{overwhelm:2,anxiety:2,boredom:2,confusion:1}},
   {id:'injustice',cat:'mind',a:'Sense of injustice',k:'That\'s SO not fair!',s:{anger:3,frustration:2,envy:1}},
-  {id:'detached',cat:'mind',a:'Feeling unreal / detached',k:'Everything feels weird',s:{overwhelm:2,fear:1,confusion:2,grief:1}},
+  {id:'detached',cat:'mind',a:'Feeling unreal / detached',k:'Everything feels far away or fuzzy',s:{overwhelm:2,fear:1,confusion:2,grief:1}},
   {id:'longing',cat:'mind',a:'Longing for the past',k:'I want things how they were',s:{grief:2,sadness:2,loneliness:1}},
   {id:'connected',cat:'mind',a:'Feeling connected to others',k:'I feel close to people',s:{love:3,gratitude:2,serenity:1}},
   {id:'inspired',cat:'mind',a:'Feeling inspired',k:'I want to create something!',s:{awe:2,hope:2,excitement:2,pride:1}},
-  {id:'blank',cat:'mind',a:'Mind going blank',k:'Brain stopped working',s:{surprise:2,confusion:2,fear:1,overwhelm:1}},
+  {id:'blank',cat:'mind',a:'Mind suddenly going empty',k:'Brain stopped working',s:{surprise:2,confusion:2,fear:1,overwhelm:1}},
 
   // ── BEHAVIOUR (16) ──
   {id:'avoid',cat:'beh',a:'Avoiding situations',k:'Don\'t want to go',s:{anxiety:3,shame:2,fear:2,embarrassment:1}},
   {id:'snap',cat:'beh',a:'Snapping at people',k:'Yelling or mean words',s:{anger:3,frustration:2}},
-  {id:'withdraw',cat:'beh',a:'Pulling away from people',k:'Want to be alone',s:{sadness:2,shame:2,loneliness:2,grief:2}},
+  {id:'withdraw',cat:'beh',a:'Withdrawing / avoiding connection',k:'Want to be alone',s:{sadness:2,shame:2,loneliness:2,grief:2}},
   {id:'checking',cat:'beh',a:'Compulsive checking',k:'Checking things over and over',s:{anxiety:3,guilt:1}},
   {id:'smiling',cat:'beh',a:'Smiling / laughing',k:'Big smiles and giggles',s:{joy:3,amusement:3,love:1,excitement:1}},
   {id:'helping',cat:'beh',a:'Wanting to help others',k:'I want to help!',s:{love:2,gratitude:2,pride:1}},
   {id:'sharing',cat:'beh',a:'Telling others / sharing',k:'I want to show everyone!',s:{pride:2,joy:2,excitement:2}},
   {id:'slowing',cat:'beh',a:'Moving slowly / still',k:'Going really slow',s:{serenity:3,sadness:2,awe:1}},
   {id:'pacing',cat:'beh',a:'Pacing / restless movement',k:'Walking back and forth',s:{anxiety:2,frustration:2,excitement:1}},
-  {id:'crying',cat:'beh',a:'Crying',k:'Tears coming out',s:{sadness:3,grief:3,frustration:1,joy:1,gratitude:1}},
+  {id:'crying',cat:'beh',a:'Actively crying / sobbing',k:'Tears coming out',s:{sadness:3,grief:3,frustration:1,joy:1,gratitude:1}},
   {id:'hitting',cat:'beh',a:'Urge to hit or throw',k:'Want to smash things',s:{anger:3,frustration:2}},
   {id:'reassurance',cat:'beh',a:'Seeking reassurance',k:'Asking "is it OK?" a lot',s:{anxiety:2,guilt:2,loneliness:1}},
   {id:'zoning',cat:'beh',a:'Zoning out / scrolling',k:'Staring at nothing',s:{boredom:3,overwhelm:2,loneliness:1}},
@@ -658,11 +660,14 @@ function toggleSym(id){
     // Pulse: brief opacity bump on selection for "alive" feel
     ['orb1','orb2','orb3'].forEach((oid,i) => {
       const orb = document.getElementById(oid);
-      const base = [0.18, 0.14, 0.16][i];
+      const base = [0.32, 0.28, 0.30][i];
       orb.style.opacity = (base + 0.08).toString();
       setTimeout(()=>{ orb.style.opacity = base.toString(); }, 600);
     });
   } else {
+    const btn = document.getElementById('contBtn');
+    btn.style.background = '';
+    btn.classList.remove('live');
     resetOrbs();
   }
 }
@@ -679,11 +684,34 @@ function calcScores(){
 
 function updateOrbs(){
   const sc = calcScores();
-  const top = Object.entries(sc).sort((a,b)=>b[1]-a[1])[0];
-  if(top && EMOTIONS[top[0]]){
-    const c = EMOTIONS[top[0]].color;
-    setThemeColor(c);
+  const sorted = Object.entries(sc).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]);
+  if(!sorted.length) return;
+  const top = sorted[0];
+  if(EMOTIONS[top[0]]) setThemeColor(EMOTIONS[top[0]].color);
+  // Button: blend top emotions by score share into a gradient or solid
+  const total = sorted.reduce((s,[,v])=>s+v, 0);
+  const threshold = total * 0.12; // emotions scoring < 12% of total are ignored
+  const significant = sorted.filter(([,v])=>v >= threshold).slice(0, 4);
+  const btn = document.getElementById('contBtn');
+  if(significant.length === 1){
+    // Clear winner — solid colour
+    btn.style.background = EMOTIONS[significant[0][0]].color;
+  } else {
+    // Multiple emotions — smooth gradient weighted by score share
+    let pos = 0;
+    const stops = [];
+    significant.forEach(([k,v], i) => {
+      const share = Math.round((v / total) * 100);
+      const start = pos;
+      const end = pos + share;
+      // Blend into previous colour at the join point
+      if(i > 0) stops.push(`${EMOTIONS[k].color} ${start}%`);
+      stops.push(`${EMOTIONS[k].color} ${end}%`);
+      pos = end;
+    });
+    btn.style.background = `linear-gradient(135deg, ${stops.join(', ')})`;
   }
+  btn.classList.add('live');
 }
 
 function setThemeColor(c){
@@ -697,11 +725,11 @@ function setThemeColor(c){
   const c2 = `hsl(${h2}, ${Math.min(hsl.s+10,100)}%, ${Math.min(hsl.l+15,70)}%)`;
   const c3 = `hsl(${h3}, ${Math.min(hsl.s+5,100)}%, ${Math.min(hsl.l+10,65)}%)`;
   document.getElementById('orb1').style.background = `linear-gradient(135deg, ${c}, ${c2})`;
-  document.getElementById('orb1').style.opacity = '0.18';
+  document.getElementById('orb1').style.opacity = '0.32';
   document.getElementById('orb2').style.background = `linear-gradient(135deg, ${c2}, ${c3})`;
-  document.getElementById('orb2').style.opacity = '0.14';
+  document.getElementById('orb2').style.opacity = '0.28';
   document.getElementById('orb3').style.background = `linear-gradient(135deg, ${c3}, ${c})`;
-  document.getElementById('orb3').style.opacity = '0.16';
+  document.getElementById('orb3').style.opacity = '0.30';
 }
 
 function hexToHSL(hex){
@@ -714,11 +742,11 @@ function hexToHSL(hex){
 
 function resetOrbs(){
   document.getElementById('orb1').style.background = 'linear-gradient(135deg,#FF6B6B,#FF8E53)';
-  document.getElementById('orb1').style.opacity = '0.15';
+  document.getElementById('orb1').style.opacity = '0.28';
   document.getElementById('orb2').style.background = 'linear-gradient(135deg,#4ECDC4,#44A3AA)';
-  document.getElementById('orb2').style.opacity = '0.12';
+  document.getElementById('orb2').style.opacity = '0.24';
   document.getElementById('orb3').style.background = 'linear-gradient(135deg,#A78BFA,#8B5CF6)';
-  document.getElementById('orb3').style.opacity = '0.13';
+  document.getElementById('orb3').style.opacity = '0.26';
 }
 
 function showScreen(id){
@@ -852,7 +880,10 @@ window.closeTool = () => {
 window.goHome = () => {
   clearTimers();
   S.sel.clear(); S.emotion=null; S.intensity=null;
-  document.getElementById('contBtn').disabled = true;
+  const contBtn = document.getElementById('contBtn');
+  contBtn.disabled = true;
+  contBtn.style.background = '';
+  contBtn.classList.remove('live');
   resetOrbs();
   document.documentElement.style.setProperty('--em-c', '#7B5BBF');
   document.documentElement.style.setProperty('--em-g', 'rgba(123,91,191,0.4)');
