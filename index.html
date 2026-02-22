@@ -81,8 +81,10 @@ textarea,input{font-family:inherit;border:none;background:none;color:inherit;out
 .btn-p{background:#fff;color:#0a0a0f;box-shadow:0 8px 30px rgba(255,255,255,0.08)}
 .btn-p:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 12px 40px rgba(255,255,255,0.15)}
 .btn-p:disabled{background:rgba(255,255,255,0.08);color:var(--muted);box-shadow:none}
-.btn-p.live{color:#fff;box-shadow:0 8px 30px var(--em-g);transition:background 0.6s ease-in-out,box-shadow 0.6s ease-in-out}
+.btn-p.live{color:#fff;box-shadow:0 8px 30px var(--em-g);transition:background-image 0.6s ease-in-out,box-shadow 0.6s ease-in-out,opacity 0.4s ease-in-out}
 .btn-p.live:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 12px 40px var(--em-g)}
+.btn-p.grad-fade{animation:btnGradFade 0.5s ease-in-out}
+@keyframes btnGradFade{0%{opacity:0.4}50%{opacity:0.85}100%{opacity:1}}
 .btn-s{background:var(--card);color:var(--text2);border:1px solid var(--border)}
 .btn-s:hover{background:var(--card-h);color:var(--text)}
 .btn-em{background:var(--em-c);color:#fff;box-shadow:0 8px 30px var(--em-g)}
@@ -693,25 +695,36 @@ function updateOrbs(){
   const threshold = total * 0.12; // emotions scoring < 12% of total are ignored
   const significant = sorted.filter(([,v])=>v >= threshold).slice(0, 4);
   const btn = document.getElementById('contBtn');
+  const wasLive = btn.classList.contains('live');
   if(significant.length === 1){
     // Clear winner — solid colour
-    btn.style.background = EMOTIONS[significant[0][0]].color;
+    applyBtnGradient(btn, EMOTIONS[significant[0][0]].color, wasLive);
   } else {
     // Multiple emotions — smooth gradient weighted by score share
+    // Each colour placed at the midpoint of its score-weighted zone for true blending
+    const sigTotal = significant.reduce((s,[,v])=>s+v, 0);
     let pos = 0;
     const stops = [];
-    significant.forEach(([k,v], i) => {
-      const share = Math.round((v / total) * 100);
-      const start = pos;
-      const end = pos + share;
-      // Blend into previous colour at the join point
-      if(i > 0) stops.push(`${EMOTIONS[k].color} ${start}%`);
-      stops.push(`${EMOTIONS[k].color} ${end}%`);
-      pos = end;
+    significant.forEach(([k,v]) => {
+      const share = (v / sigTotal) * 100;
+      const mid = Math.round(pos + share / 2);
+      stops.push(`${EMOTIONS[k].color} ${mid}%`);
+      pos += share;
     });
-    btn.style.background = `linear-gradient(135deg, ${stops.join(', ')})`;
+    applyBtnGradient(btn, `linear-gradient(135deg, ${stops.join(', ')})`, wasLive);
   }
   btn.classList.add('live');
+}
+
+function applyBtnGradient(btn, gradient, animate){
+  // Apply new gradient with a brief opacity cross-fade for smooth transition
+  btn.style.background = gradient;
+  if(animate){
+    btn.classList.remove('grad-fade');
+    // Force reflow so re-adding the class restarts the animation
+    void btn.offsetWidth;
+    btn.classList.add('grad-fade');
+  }
 }
 
 function setThemeColor(c){
