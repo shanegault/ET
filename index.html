@@ -12,7 +12,7 @@
 :root {
   --bg:#0a0a0f; --bg2:#121218; --card:rgba(255,255,255,0.05); --card-h:rgba(255,255,255,0.08);
   --text:#fff; --text2:rgba(255,255,255,0.6); --muted:rgba(255,255,255,0.35); --border:rgba(255,255,255,0.08);
-  --em-c:#7B5BBF; --em-l:#9B7BDF; --em-g:rgba(123,91,191,0.4);
+  --em-c:#7B5BBF; --em-l:#9B7BDF; --em-g:rgba(123,91,191,0.4); --em-t:#7B5BBF0d;
   --font-d:'Fraunces',serif; --font-b:'Outfit',sans-serif; --r:20px;
   --screen-transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -65,10 +65,16 @@ textarea,input{font-family:inherit;border:none;background:none;color:inherit;out
 .sub{font-size:1rem;color:var(--text2);font-weight:300;line-height:1.5}
 
 /* Symptom Selector */
-.sym-h{display:flex;align-items:center;gap:10px;margin:28px 0 12px}
-.sym-bar{width:3px;height:20px;border-radius:2px}
+.sym-sec{border-radius:20px;border:1px solid var(--border);background:rgba(255,255,255,0.03);padding:16px 16px 16px 20px;margin-top:16px;border-left-width:3px}
+.sym-sec.body{border-left-color:#FF6B6B;background:rgba(255,107,107,0.04)}
+.sym-sec.mind{border-left-color:#4ECDC4;background:rgba(78,205,196,0.04)}
+.sym-sec.beh{border-left-color:#A78BFA;background:rgba(167,139,250,0.04)}
+.sym-h{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.sym-bar{width:4px;height:18px;border-radius:2px;flex-shrink:0}
 .sym-bar.body{background:#FF6B6B}.sym-bar.mind{background:#4ECDC4}.sym-bar.beh{background:#A78BFA}
-.sym-l{font-size:0.75rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted)}
+.sym-l{font-size:0.75rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase}
+.sym-l.body{color:#FF6B6B}.sym-l.mind{color:#4ECDC4}.sym-l.beh{color:#A78BFA}
+.sym-count{margin-left:auto;font-size:0.6875rem;font-weight:500;color:var(--muted);letter-spacing:0.03em}
 .sym-grid{display:flex;flex-wrap:wrap;gap:8px}
 .sym-pill{padding:10px 16px;font-size:0.875rem;font-weight:500;border-radius:100px;background:var(--card);color:var(--text2);border:1px solid var(--border);transition:all 0.2s;user-select:none;-webkit-tap-highlight-color:transparent}
 .sym-pill:hover{background:var(--card-h);color:var(--text)}
@@ -77,7 +83,9 @@ textarea,input{font-family:inherit;border:none;background:none;color:inherit;out
 /* Fixed Bottom Bar */
 .fix-b{position:fixed;bottom:0;left:0;right:0;padding:24px 20px;background:linear-gradient(to top,var(--bg) 70%,transparent);z-index:50;pointer-events:none}
 .fix-b .container{padding:0;pointer-events:auto}
-.btn{width:100%;padding:16px;font-size:0.9375rem;font-weight:600;border-radius:14px;transition:all 0.3s;text-align:center;display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:-0.01em}
+.btn{width:100%;padding:16px;font-size:0.9375rem;font-weight:600;border-radius:14px;transition:all 0.3s;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;letter-spacing:-0.01em}
+.btn-main-l{line-height:1.2}
+.btn-sub-l{font-size:0.7rem;font-weight:400;opacity:0.65;letter-spacing:0.01em}
 .btn-p{background:#fff;color:#0a0a0f;box-shadow:0 8px 30px rgba(255,255,255,0.08)}
 .btn-p:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 12px 40px rgba(255,255,255,0.15)}
 .btn-p:disabled{background:rgba(255,255,255,0.08);color:var(--muted);box-shadow:none}
@@ -107,7 +115,7 @@ textarea,input{font-family:inherit;border:none;background:none;color:inherit;out
 .res-header{margin-bottom:28px}
 .res-em{font-family:var(--font-d);font-size:clamp(2rem,8vw,2.75rem);font-weight:700;line-height:1.1;letter-spacing:-0.02em}
 .res-tag{color:var(--text2);font-size:0.9375rem;margin-top:6px}
-.sec-box{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:20px;padding:20px;margin-bottom:16px}
+.sec-box{background:var(--em-t);border:1px solid var(--border);border-left:3px solid var(--em-c);border-radius:20px;padding:20px;margin-bottom:16px;transition:border-color 1.8s ease-in-out,background 1.8s ease-in-out}
 .sec-t{font-family:var(--font-d);font-size:1.1rem;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:10px}
 .sec-icon{font-size:1rem;opacity:0.7}
 .cause-l{list-style:none;display:flex;flex-direction:column;gap:8px}
@@ -239,14 +247,20 @@ textarea,input{font-family:inherit;border:none;background:none;color:inherit;out
     <div class="container">
       <h1 class="t-xl" id="mainT">What are you experiencing?</h1>
       <p class="sub" id="mainS" style="margin-top:8px">Select everything that resonates.</p>
-      <div class="sym-h"><div class="sym-bar body"></div><span class="sym-l" id="catBody">Body</span></div>
-      <div class="sym-grid" id="bodySym"></div>
-      <div class="sym-h"><div class="sym-bar mind"></div><span class="sym-l" id="catMind">Mind</span></div>
-      <div class="sym-grid" id="mindSym"></div>
-      <div class="sym-h"><div class="sym-bar beh"></div><span class="sym-l" id="catBeh">Actions</span></div>
-      <div class="sym-grid" id="behSym"></div>
+      <div class="sym-sec body">
+        <div class="sym-h"><div class="sym-bar body"></div><span class="sym-l body" id="catBody">Body</span><span class="sym-count" id="cntBody"></span></div>
+        <div class="sym-grid" id="bodySym"></div>
+      </div>
+      <div class="sym-sec mind">
+        <div class="sym-h"><div class="sym-bar mind"></div><span class="sym-l mind" id="catMind">Mind</span><span class="sym-count" id="cntMind"></span></div>
+        <div class="sym-grid" id="mindSym"></div>
+      </div>
+      <div class="sym-sec beh">
+        <div class="sym-h"><div class="sym-bar beh"></div><span class="sym-l beh" id="catBeh">Actions</span><span class="sym-count" id="cntBeh"></span></div>
+        <div class="sym-grid" id="behSym"></div>
+      </div>
     </div>
-    <div class="fix-b"><div class="container"><button class="btn btn-p" id="contBtn" disabled>Continue</button></div></div>
+    <div class="fix-b"><div class="container"><button class="btn btn-p" id="contBtn" disabled><span class="btn-main-l" id="contBtnLabel">Identify this feeling</span><span class="btn-sub-l" id="contBtnHint">Pick 3 or more for the best result</span></button></div></div>
   </section>
 
   <!-- SCREEN 2: Emotion Reveal + Intensity -->
@@ -279,11 +293,11 @@ textarea,input{font-family:inherit;border:none;background:none;color:inherit;out
         <ul class="cause-l" id="causeL"></ul>
       </div>
       <div class="sec-box">
-        <h3 class="sec-t"><span class="sec-icon">&#9889;</span> <span id="quickT">Quick Relief</span></h3>
+        <h3 class="sec-t"><span class="sec-icon" id="quickIcon">&#9889;</span> <span id="quickT">Quick Relief</span></h3>
         <div class="tool-list" id="quickL"></div>
       </div>
       <div class="sec-box">
-        <h3 class="sec-t"><span class="sec-icon">&#127793;</span> <span id="deepT">Deeper Strategies</span></h3>
+        <h3 class="sec-t"><span class="sec-icon" id="deepIcon">&#127793;</span> <span id="deepT">Deeper Strategies</span></h3>
         <div class="tool-list" id="deepL"></div>
       </div>
       <div style="height:60px"></div>
@@ -628,7 +642,7 @@ function updateModeUI(){
   document.getElementById('modeL').innerText = S.kids ? 'Kids' : 'Adult';
   document.getElementById('mainT').innerText = S.kids ? "What's happening right now?" : "What are you experiencing?";
   document.getElementById('mainS').innerText = S.kids ? "Tap everything that feels true." : "Select everything that resonates.";
-  document.getElementById('contBtn').innerText = S.kids ? "What is this feeling?" : "Identify this feeling";
+  document.getElementById('contBtnLabel').innerText = S.kids ? "What is this feeling?" : "Identify this feeling";
   document.getElementById('catBody').innerText = S.kids ? "My Body" : "Body";
   document.getElementById('catMind').innerText = S.kids ? "My Thoughts" : "Mind";
   document.getElementById('catBeh').innerText = S.kids ? "What I'm Doing" : "Actions";
@@ -640,6 +654,25 @@ function updateModeUI(){
 }
 
 function renderSymptoms(){
+  // Update per-category selected counts and hint
+  const catMap = {body:'cntBody', mind:'cntMind', beh:'cntBeh'};
+  Object.entries(catMap).forEach(([cat, cntId]) => {
+    const total = SYMPTOMS.filter(s=>s.cat===cat).length;
+    const sel = SYMPTOMS.filter(s=>s.cat===cat && S.sel.has(s.id)).length;
+    const el = document.getElementById(cntId);
+    if(el) el.textContent = sel > 0 ? `${sel} of ${total}` : `${total} options`;
+  });
+  // Update the button hint
+  const btnHint = document.getElementById('contBtnHint');
+  if(btnHint){
+    if(S.sel.size >= 3){
+      btnHint.textContent = `${S.sel.size} selected — good to go`;
+    } else if(S.sel.size > 0){
+      btnHint.textContent = `${S.sel.size} selected — pick a few more for best results`;
+    } else {
+      btnHint.textContent = S.kids ? 'Pick 3 or more for the best answer' : 'Pick 3 or more for the most accurate result';
+    }
+  }
   ['body','mind','beh'].forEach(cat => {
     const div = document.getElementById(cat+'Sym');
     div.innerHTML = '';
@@ -731,6 +764,7 @@ function setThemeColor(c){
   document.documentElement.style.setProperty('--em-c', c);
   document.documentElement.style.setProperty('--em-g', c+'66');
   document.documentElement.style.setProperty('--em-l', c+'cc');
+  document.documentElement.style.setProperty('--em-t', c+'0d'); // ~5% alpha — sec-box tint
   // Generate gradient companions: lighter tint and warm/cool shift
   const hsl = hexToHSL(c);
   const h2 = (hsl.h + 30) % 360;  // analogous warm
@@ -830,8 +864,16 @@ function showResults(){
     `<li><div class="cause-dot"></div><span>${c}</span></li>`
   ).join('');
   
-  document.getElementById('quickT').innerText = S.kids ? "Feel better fast" : "Quick Relief";
-  document.getElementById('deepT').innerText = S.kids ? "Try going deeper" : "Deeper Strategies";
+  const positiveEmotions = new Set(['joy','excitement','love','gratitude','serenity','hope','pride','amusement','awe']);
+  const isPositive = positiveEmotions.has(S.emotion);
+  document.getElementById('quickT').innerText = S.kids
+    ? (isPositive ? "Make it last!" : "Feel better fast")
+    : (isPositive ? "Keep it going" : "Quick Relief");
+  document.getElementById('deepT').innerText = S.kids
+    ? (isPositive ? "Grow this feeling" : "Try going deeper")
+    : (isPositive ? "Deepen it" : "Deeper Strategies");
+  document.getElementById('quickIcon').innerHTML = isPositive ? '&#10024;' : '&#9889;';
+  document.getElementById('deepIcon').innerHTML = isPositive ? '&#127807;' : '&#127793;';
   
   // Build tool lists
   const quickTools = em.quick.map(id => toolCard(id)).join('');
@@ -901,6 +943,7 @@ window.goHome = () => {
   document.documentElement.style.setProperty('--em-c', '#7B5BBF');
   document.documentElement.style.setProperty('--em-g', 'rgba(123,91,191,0.4)');
   document.documentElement.style.setProperty('--em-l', '#9B7BDF');
+  document.documentElement.style.setProperty('--em-t', '#7B5BBF0d');
   renderSymptoms();
   updateModeUI();
   showScreen('startScr');
