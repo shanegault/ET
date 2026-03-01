@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en-NZ">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emotional Taxonomy — Coming Soon</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&display=swap" rel="stylesheet">
+  <style>
+:root {
+  --bg: #0a0a0f;
+  --bg2: #121218;
+  --card: rgba(255,255,255,0.05);
+  --card-h: rgba(255,255,255,0.08);
+  --text: #fff;
+  --text2: rgba(255,255,255,0.6);
+  --muted: rgba(255,255,255,0.5);
+  --border: rgba(255,255,255,0.08);
+  --font-d: 'Fraunces', serif;
+  --font-b: 'Outfit', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+body { font-family: var(--font-b); background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; }
+/* Focus-visible replaces blanket outline:none — keyboards get a visible ring, pointer users don't */
+button, input { font-family: inherit; border: none; background: none; color: inherit; cursor: pointer; }
+button:focus-visible, input:focus-visible { outline: 2px solid rgba(184,157,255,0.8); outline-offset: 3px; border-radius: 14px; }
+.mode-tog:focus-visible { border-radius: 100px; outline-offset: 2px; }
+/* Screen-reader-only label utility */
+.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
+
+@keyframes float { 0%,100% { transform: translate(0,0) scale(1); } 33% { transform: translate(30px,-30px) scale(1.1); } 66% { transform: translate(-20px,20px) scale(0.9); } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pulse { 0%,100% { opacity: 0.5; } 50% { opacity: 1; } }
+@keyframes shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
+@keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+
+/* ── Orbs ─────────────────────────────────────── */
+.orbs { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+.orb { position: absolute; border-radius: 50%; filter: blur(100px); animation: float 25s ease-in-out infinite; transition: background 1s ease-in-out; }
+.orb-1 { width: 600px; height: 600px; top: -200px; left: -150px; background: linear-gradient(135deg,#FF6B6B,#FF8E53); opacity: 0.2; }
+.orb-2 { width: 500px; height: 500px; top: 35%; right: -150px; background: linear-gradient(135deg,#4ECDC4,#44A3AA); opacity: 0.18; animation-delay: -9s; }
+.orb-3 { width: 550px; height: 550px; bottom: -150px; left: 25%; background: linear-gradient(135deg,#A78BFA,#8B5CF6); opacity: 0.2; animation-delay: -17s; }
+
+/* ── Header ───────────────────────────────────── */
+.header { display: flex; justify-content: space-between; align-items: center; padding: 14px 32px; position: sticky; top: 0; z-index: 100; background: rgba(10,10,15,0.75); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+.logo { display: flex; align-items: center; gap: 12px; }
+.logo img { width: 36px; height: 36px; flex-shrink: 0; display: block; }
+.logo-txt { display: flex; flex-direction: column; }
+.logo-t { font-family: var(--font-b); font-size: 0.9375rem; font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; }
+.logo-s { font-size: 0.625rem; color: var(--muted); font-weight: 400; margin-top: 1px; }
+.header-right { display: flex; align-items: center; gap: 12px; }
+.coming-badge { padding: 5px 12px; background: var(--card); border: 1px solid var(--border); border-radius: 100px; font-size: 0.6875rem; font-weight: 600; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+/* Mode toggle (matches app) */
+.mode-tog { display: flex; align-items: center; gap: 8px; padding: 6px 14px; background: var(--card); border-radius: 100px; border: 1px solid var(--border); font-size: 0.75rem; color: var(--text2); transition: all 0.2s; font-weight: 500; }
+.mode-tog:hover { background: var(--card-h); }
+.mode-trk { width: 36px; height: 20px; background: rgba(255,255,255,0.12); border-radius: 10px; position: relative; transition: background 0.3s; }
+.mode-tog.kids .mode-trk { background: linear-gradient(135deg,#9B5DE5,#F15BB5); }
+.mode-th { width: 16px; height: 16px; background: #fff; border-radius: 50%; position: absolute; top: 2px; left: 2px; transition: transform 0.3s cubic-bezier(0.4,0,0.2,1); box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+.mode-tog.kids .mode-th { transform: translateX(16px); }
+
+/* ── Kids/Adult visibility ────────────────────── */
+.kids-only { display: none; }
+body.kids .kids-only { display: block; }
+body.kids .adult-only { display: none; }
+.kids-only-flex { display: none; }
+body.kids .kids-only-flex { display: flex; }
+body.kids .adult-only-flex { display: none; }
+body.kids .kids-only-inline { display: inline; }
+body.kids .adult-only-inline { display: none; }
+.kids-only-inline { display: none; }
+.adult-only-inline { display: inline; }
+
+/* ── Layout ───────────────────────────────────── */
+.page { position: relative; z-index: 1; }
+.container { max-width: 720px; margin: 0 auto; padding: 0 24px; }
+.container-wide { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+
+/* ── Hero ─────────────────────────────────────── */
+.hero { min-height: calc(100vh - 65px); display: flex; align-items: center; padding: 80px 0 60px; }
+.hero-inner { max-width: 680px; margin: 0 auto; padding: 0 24px; text-align: center; }
+.hero-eyebrow { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; background: rgba(123,91,191,0.12); border: 1px solid rgba(123,91,191,0.25); border-radius: 100px; font-size: 0.75rem; font-weight: 600; color: #B89DFF; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 28px; animation: fadeUp 0.6s ease-out both; }
+body.kids .hero-eyebrow { background: rgba(241,91,181,0.12); border-color: rgba(241,91,181,0.25); color: #F15BB5; }
+.hero-eyebrow-dot { width: 6px; height: 6px; border-radius: 50%; background: #B89DFF; animation: pulse 2s ease-in-out infinite; }
+body.kids .hero-eyebrow-dot { background: #F15BB5; }
+.hero-headline { font-family: var(--font-d); font-size: clamp(2.75rem, 7vw, 4.5rem); font-weight: 700; line-height: 1.1; letter-spacing: -0.03em; margin-bottom: 24px; animation: fadeUp 0.6s ease-out 0.1s both; }
+/* Gradient text — colour: fallback prevents invisible text where background-clip:text is unsupported */
+.hero-headline em { color: #B89DFF; font-style: italic; display: inline-block; padding-bottom: 0.18em; padding-right: 0.18em; line-height: 1; background: linear-gradient(135deg,#B89DFF,#7B5BBF,#4ECDC4); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: shimmer 4s linear infinite; }
+body.kids .hero-headline em { color: #F15BB5; background: linear-gradient(135deg,#F15BB5,#9B5DE5,#FFB84A); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: shimmer 4s linear infinite; }
+.hero-sub { font-size: 1.125rem; color: var(--text2); line-height: 1.6; max-width: 520px; margin: 0 auto 40px; font-weight: 300; animation: fadeUp 0.6s ease-out 0.2s both; }
+.hero-cta { animation: fadeUp 0.6s ease-out 0.3s both; }
+.email-form { display: flex; gap: 10px; max-width: 440px; margin: 0 auto 16px; }
+.email-input { flex: 1; padding: 14px 18px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 14px; font-size: 0.9375rem; color: var(--text); transition: border-color 0.2s; }
+.email-input::placeholder { color: var(--muted); }
+.email-input:focus { border-color: rgba(123,91,191,0.5); outline: none; }
+.btn-primary { padding: 14px 24px; background: #fff; color: #0a0a0f; font-size: 0.9375rem; font-weight: 700; border-radius: 14px; white-space: nowrap; transition: all 0.2s; letter-spacing: -0.01em; }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(255,255,255,0.15); }
+.hero-hint { font-size: 0.75rem; color: var(--muted); }
+/* Form success state */
+.form-success { display: none; padding: 14px 20px; background: rgba(78,205,196,0.08); border: 1px solid rgba(78,205,196,0.25); border-radius: 14px; font-size: 0.9375rem; color: #4ECDC4; max-width: 440px; margin: 0 auto 16px; }
+.form-success.visible { display: block; }
+.hero-scroll { margin-top: 60px; display: flex; flex-direction: column; align-items: center; gap: 8px; opacity: 0.4; animation: fadeIn 1s ease-out 1s both; }
+.hero-scroll-line { width: 1px; height: 48px; background: linear-gradient(to bottom,rgba(255,255,255,0.4),transparent); }
+.hero-scroll-label { font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); }
+
+/* ── Stats strip ──────────────────────────────── */
+.stats-strip { padding: 28px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: rgba(255,255,255,0.02); }
+.stats-row { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; }
+.stat-item { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 16px 40px; border-right: 1px solid var(--border); }
+.stat-item:last-child { border-right: none; }
+.stat-num { font-family: var(--font-d); font-size: 2rem; font-weight: 700; line-height: 1; letter-spacing: -0.03em; }
+.stat-num.coral { color: #FF6B6B; }
+.stat-num.teal { color: #4ECDC4; }
+.stat-num.purple { color: #B89DFF; }
+.stat-label { font-size: 0.6875rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 500; }
+
+/* ── Section headers ──────────────────────────── */
+.sec-label { font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+.sec-headline { font-family: var(--font-d); font-size: clamp(1.75rem,4vw,2.5rem); font-weight: 700; line-height: 1.15; letter-spacing: -0.02em; margin-bottom: 16px; }
+.sec-sub { font-size: 1rem; color: var(--text2); line-height: 1.6; max-width: 500px; font-weight: 300; }
+
+/* ── How it works ─────────────────────────────── */
+.how-section { padding: 100px 0; }
+ol.how-steps { list-style: none; display: grid; grid-template-columns: repeat(4,1fr); gap: 0; margin-top: 56px; }
+.how-step { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 0 16px; position: relative; }
+/* Dotted connector between circles — no full-width line */
+.how-step:not(:last-child)::after { content: '···'; position: absolute; top: 22px; left: calc(50% + 28px); width: calc(100% - 56px); text-align: center; color: var(--border); font-size: 0.875rem; letter-spacing: 0.2em; line-height: 1; pointer-events: none; }
+.step-num { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-d); font-size: 1.25rem; font-weight: 700; margin-bottom: 20px; }
+.how-step:nth-child(1) .step-num { color: #FF6B6B; border: 1px solid rgba(255,107,107,0.3); background: rgba(255,107,107,0.06); }
+.how-step:nth-child(2) .step-num { color: #4ECDC4; border: 1px solid rgba(78,205,196,0.3); background: rgba(78,205,196,0.06); }
+.how-step:nth-child(3) .step-num { color: #B89DFF; border: 1px solid rgba(184,157,255,0.3); background: rgba(184,157,255,0.06); }
+.how-step:nth-child(4) .step-num { color: #FFB84A; border: 1px solid rgba(255,184,74,0.3); background: rgba(255,184,74,0.06); }
+.step-title { font-weight: 600; font-size: 0.9375rem; margin-bottom: 8px; }
+.step-desc { font-size: 0.8125rem; color: var(--text2); line-height: 1.5; }
+/* "At launch" badge on step 4 */
+.step-soon { display: inline-block; font-family: var(--font-b); font-size: 0.6rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #FFB84A; border: 1px solid rgba(255,184,74,0.35); border-radius: 100px; padding: 2px 7px; margin-left: 4px; vertical-align: middle; }
+/* Kids steps: add bounce to numbers */
+body.kids .step-num { animation: bounce 2s ease-in-out infinite; }
+body.kids .how-step:nth-child(2) .step-num { animation-delay: 0.2s; }
+body.kids .how-step:nth-child(3) .step-num { animation-delay: 0.4s; }
+body.kids .how-step:nth-child(4) .step-num { animation-delay: 0.6s; }
+
+/* ── Features ─────────────────────────────────── */
+.features-section { padding: 100px 0; }
+.feature-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-top: 56px; }
+.feature-card { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 20px; padding: 28px 24px; transition: background 0.2s, border-color 0.2s; }
+.feature-card:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.12); }
+.feature-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+.feature-icon svg { width: 22px; height: 22px; }
+.feature-icon.coral { background: rgba(255,107,107,0.1); color: #FF6B6B; }
+.feature-icon.teal { background: rgba(78,205,196,0.1); color: #4ECDC4; }
+.feature-icon.purple { background: rgba(184,157,255,0.1); color: #B89DFF; }
+.feature-title { font-family: var(--font-d); font-size: 1.125rem; font-weight: 600; margin-bottom: 10px; }
+.feature-desc { font-size: 0.875rem; color: var(--text2); line-height: 1.6; }
+
+/* ── Dashboard teaser ─────────────────────────── */
+.teaser-section { padding: 100px 0; }
+.teaser-wrap { margin-top: 56px; position: relative; max-width: 600px; margin-left: auto; margin-right: auto; }
+.teaser-iframe-box { border-radius: 24px; overflow: hidden; border: 1px solid var(--border); height: 520px; }
+.teaser-iframe { width: 100%; height: 960px; border: none; pointer-events: none; display: block; }
+/* Overlay is interactive (contains a link) — iframe is blocked via pointer-events:none on the iframe itself */
+.teaser-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom,transparent 30%,rgba(10,10,15,0.75) 65%,var(--bg) 100%); display: flex; align-items: flex-end; justify-content: center; padding-bottom: 36px; border-radius: 24px; }
+.teaser-cta { text-align: center; }
+.teaser-cta-label { font-family: var(--font-d); font-size: 1.25rem; font-weight: 600; margin-bottom: 6px; }
+.teaser-cta-sub { font-size: 0.875rem; color: var(--text2); margin-bottom: 16px; }
+.teaser-cta-link { display: inline-block; font-size: 0.8125rem; font-weight: 600; color: #B89DFF; border: 1px solid rgba(184,157,255,0.3); border-radius: 100px; padding: 7px 18px; text-decoration: none; transition: background 0.2s, border-color 0.2s; }
+.teaser-cta-link:hover { background: rgba(184,157,255,0.08); border-color: rgba(184,157,255,0.5); }
+body.kids .teaser-cta-link { color: #F15BB5; border-color: rgba(241,91,181,0.3); }
+body.kids .teaser-cta-link:hover { background: rgba(241,91,181,0.08); border-color: rgba(241,91,181,0.5); }
+
+/* ── Tools section ────────────────────────────── */
+.tools-section { padding: 80px 0; }
+.tools-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-top: 40px; }
+.tool-card { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 14px; padding: 20px; }
+.tool-card-icon { font-size: 1.25rem; margin-bottom: 12px; opacity: 0.85; }
+.tool-card-title { font-weight: 600; font-size: 0.9375rem; margin-bottom: 6px; }
+.tool-card-desc { font-size: 0.8125rem; color: var(--text2); line-height: 1.55; }
+
+/* ── CTA section ──────────────────────────────── */
+.cta-section { padding: 120px 0; text-align: center; }
+.cta-inner { max-width: 500px; margin: 0 auto; padding: 0 24px; }
+.cta-headline { font-family: var(--font-d); font-size: clamp(2rem,5vw,3rem); font-weight: 700; line-height: 1.1; letter-spacing: -0.03em; margin-bottom: 16px; }
+.cta-sub { font-size: 1rem; color: var(--text2); margin-bottom: 36px; line-height: 1.6; font-weight: 300; }
+.email-form-2 { display: flex; gap: 10px; max-width: 440px; margin: 0 auto 16px; }
+.email-input-lg { flex: 1; padding: 14px 18px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 14px; font-size: 0.9375rem; color: var(--text); transition: border-color 0.2s; }
+.email-input-lg::placeholder { color: var(--muted); }
+.email-input-lg:focus { border-color: rgba(123,91,191,0.5); outline: none; }
+.btn-primary-lg { padding: 14px 24px; background: #fff; color: #0a0a0f; font-size: 0.9375rem; font-weight: 700; border-radius: 14px; white-space: nowrap; transition: all 0.2s; letter-spacing: -0.01em; }
+.btn-primary-lg:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(255,255,255,0.15); }
+.cta-hint { font-size: 0.75rem; color: var(--muted); margin-top: 8px; }
+.cta-success { display: none; padding: 16px 20px; background: rgba(78,205,196,0.08); border: 1px solid rgba(78,205,196,0.25); border-radius: 14px; font-size: 1rem; color: #4ECDC4; max-width: 380px; margin: 0 auto; }
+.cta-success.visible { display: block; }
+
+/* ── Footer ───────────────────────────────────── */
+footer { padding: 40px 0; border-top: 1px solid var(--border); text-align: center; }
+.footer-logo { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 12px; opacity: 0.5; }
+.footer-logo img { width: 22px; height: 22px; display: block; }
+.footer-name { font-family: var(--font-b); font-size: 0.875rem; font-weight: 700; letter-spacing: -0.01em; }
+.footer-tagline { font-size: 0.75rem; color: var(--muted); margin-bottom: 20px; }
+.footer-url { font-size: 0.75rem; color: rgba(255,255,255,0.25); }
+
+/* ── Responsive ───────────────────────────────── */
+@media (max-width: 640px) {
+  .header { padding: 12px 20px; }
+  ol.how-steps { grid-template-columns: 1fr 1fr; }
+  .how-step::after { display: none; }
+  .feature-grid { grid-template-columns: 1fr; }
+  .tools-grid { grid-template-columns: 1fr; }
+  .email-form, .email-form-2 { flex-direction: column; }
+  .stat-item { padding: 16px 24px; }
+}
+@media (max-width: 400px) {
+  ol.how-steps { grid-template-columns: 1fr; }
+  .coming-badge { display: none; }
+}
+/* ── Reduced motion ───────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .orb { animation: none; transition: none; }
+  .hero-eyebrow-dot { animation: none; }
+  .hero-headline em { animation: none; background-position: 0 center; }
+  .step-num { animation: none !important; }
+  .hero-eyebrow, .hero-headline, .hero-sub, .hero-cta, .hero-scroll { animation-duration: 0.01ms; animation-iteration-count: 1; }
+}
+  </style>
+</head>
+<body>
+<div class="orbs">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+
+<header class="header">
+  <div class="logo">
+    <img src="ET-new_1@4x.svg" alt="Emotional Taxonomy logo">
+    <div class="logo-txt">
+      <div class="logo-t">Emotional Taxonomy</div>
+      <div class="logo-s">emotional-taxonomy.com</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <button class="mode-tog" id="modeTog" onclick="toggleMode()" aria-pressed="false" aria-label="Kids mode">
+      <span class="mode-l" id="modeL">Adult</span>
+      <div class="mode-trk"><div class="mode-th"></div></div>
+    </button>
+    <div class="coming-badge">Coming Soon</div>
+  </div>
+</header>
+
+<main class="page">
+
+  <!-- ── Hero ──────────────────────────────────────── -->
+  <section class="hero">
+    <div class="hero-inner">
+
+      <div class="hero-eyebrow">
+        <div class="hero-eyebrow-dot"></div>
+        <span class="adult-only-inline">Now in development</span>
+        <span class="kids-only-inline">Built for kids like you</span>
+      </div>
+
+      <!-- Adult headline -->
+      <h1 class="hero-headline adult-only">
+        Identify what you're <em>actually</em> feeling.<br>Then do something about it.
+      </h1>
+      <!-- Kids headline -->
+      <h1 class="hero-headline kids-only">
+        Big feelings?<br>You can <em>figure them out</em>.
+      </h1>
+
+      <!-- Adult sub -->
+      <p class="hero-sub adult-only">
+        Most people struggle to name what they feel with enough precision to act on it. Emotional Taxonomy changes that — a symptom-based approach identifies your emotional state, then matches you with the right tools.
+      </p>
+      <!-- Kids sub -->
+      <p class="hero-sub kids-only">
+        Sometimes feelings get really BIG and confusing — and that's totally normal! Emotional Taxonomy helps you work out exactly what you're feeling inside. Then it gives you something helpful to do about it!
+      </p>
+
+      <div class="hero-cta">
+        <div class="email-form" id="heroForm">
+          <label for="heroEmail" class="visually-hidden">Email address</label>
+          <input id="heroEmail" class="email-input" type="email" placeholder="your@email.com" autocomplete="email">
+          <button class="btn-primary" type="submit" onclick="submitForm('hero')">
+            <span class="adult-only-inline">Notify me</span>
+            <span class="kids-only-inline">Tell me when it's ready!</span>
+          </button>
+        </div>
+        <div class="form-success" id="heroSuccess">
+          <span class="adult-only-inline">You're on the list. One email at launch, nothing else.</span>
+          <span class="kids-only-inline">You're on the list! One email when it's ready!</span>
+        </div>
+        <p class="hero-hint adult-only">No spam. A single email at launch, nothing else.</p>
+        <p class="hero-hint kids-only">Ask a grown-up to type their email above. No spam — just one message when it's ready!</p>
+      </div>
+
+      <div class="hero-scroll">
+        <div class="hero-scroll-line"></div>
+        <div class="hero-scroll-label">Scroll</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Stats strip ────────────────────────────────── -->
+  <div class="stats-strip">
+    <div class="stats-row">
+      <div class="stat-item">
+        <div class="stat-num coral">25</div>
+        <div class="stat-label">
+          <span class="adult-only-inline">Emotional states</span>
+          <span class="kids-only-inline">Feelings to discover</span>
+        </div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num teal">52</div>
+        <div class="stat-label">
+          <span class="adult-only-inline">Observable symptoms</span>
+          <span class="kids-only-inline">Body + mind clues</span>
+        </div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num purple">32</div>
+        <div class="stat-label">
+          <span class="adult-only-inline">Evidence-based tools</span>
+          <span class="kids-only-inline">Tools to try</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── How it works ───────────────────────────────── -->
+  <section class="how-section">
+    <div class="container">
+      <div class="sec-label">How it works</div>
+      <h2 class="sec-headline adult-only">Four steps to clarity</h2>
+      <h2 class="sec-headline kids-only">Four steps to feeling better!</h2>
+      <p class="sec-sub adult-only">Start with what you can observe, not what you think you feel. The algorithm does the rest.</p>
+      <p class="sec-sub kids-only">Start by noticing what's happening in your body and mind. The app does the tricky part for you!</p>
+    </div>
+    <div class="container-wide">
+      <ol class="how-steps">
+        <li class="how-step">
+          <div class="step-num">1</div>
+          <div class="step-title adult-only">Select symptoms</div>
+          <div class="step-title kids-only">Pick your clues</div>
+          <div class="step-desc adult-only">Choose from 52 observable experiences — physical, cognitive, and behavioural.</div>
+          <div class="step-desc kids-only">Tap the things you notice — butterflies, racing heart, spinning thoughts.</div>
+        </li>
+        <li class="how-step">
+          <div class="step-num">2</div>
+          <div class="step-title adult-only">Emotion identified</div>
+          <div class="step-title kids-only">Name that feeling!</div>
+          <div class="step-desc adult-only">Your symptom pattern is matched against 25 emotional states. The result is specific, not a guess.</div>
+          <div class="step-desc kids-only">Like a feelings detective, the app works out which emotion is showing up for you!</div>
+        </li>
+        <li class="how-step">
+          <div class="step-num">3</div>
+          <div class="step-title adult-only">Use a matched tool</div>
+          <div class="step-title kids-only">Try a tool</div>
+          <div class="step-desc adult-only">Each exercise is chosen for your specific emotion and how intensely you feel it — not a one-size-fits-all suggestion.</div>
+          <div class="step-desc kids-only">Get a fun activity matched just for this feeling and how big it is.</div>
+        </li>
+        <li class="how-step">
+          <div class="step-num">4</div>
+          <div class="step-title adult-only">Track progress <span class="step-soon">At launch</span></div>
+          <div class="step-title kids-only">See your feelings map! <span class="step-soon">At launch</span></div>
+          <div class="step-desc adult-only">Over time, a picture of your emotional patterns builds — which feelings recur, which tools help, and when you are most affected.</div>
+          <div class="step-desc kids-only">Over time, you can spot which feelings visit most and what helps them pass. Like a weather chart for your emotions!</div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ── Features ──────────────────────────────────── -->
+  <section class="features-section">
+    <div class="container">
+
+      <!-- Adult features -->
+      <div class="adult-only">
+        <div class="sec-label">What makes it different</div>
+        <h2 class="sec-headline">Built on mechanism, not mood</h2>
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="feature-icon coral">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><path d="M12 9c-2 0-4 1-4 3v2h2l1 5h2l1-5h2v-2c0-2-2-3-4-3z"/></svg>
+            </div>
+            <div class="feature-title">Symptom-driven detection</div>
+            <div class="feature-desc">You describe what you are experiencing — tight chest, racing thoughts, social withdrawal — not what you assume you feel. The algorithm identifies the emotion behind it.</div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon teal">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2a4.5 4.5 0 0 1 4.5 4.5v.5h.5a3.5 3.5 0 0 1 0 7H9a5 5 0 0 1-5-5 5 5 0 0 1 5-5v-.5A4.5 4.5 0 0 1 9.5 2z"/><path d="M14.5 14.5V17a2.5 2.5 0 0 1-5 0v-2.5"/></svg>
+            </div>
+            <div class="feature-title">Evidence-based interventions</div>
+            <div class="feature-desc">Every tool is grounded in established therapeutic research. Matched to your specific emotion and intensity — not a generic "breathe deeply."</div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon purple">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </div>
+            <div class="feature-title">Patterns over time</div>
+            <div class="feature-desc">Which emotions recur. Which tools actually help. When you are most affected. The dashboard surfaces what you would otherwise miss.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kids features -->
+      <div class="kids-only">
+        <div class="sec-label">What it does for you</div>
+        <h2 class="sec-headline">Three things that really help</h2>
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="feature-icon coral">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><path d="M12 9c-2 0-4 1-4 3v2h2l1 5h2l1-5h2v-2c0-2-2-3-4-3z"/></svg>
+            </div>
+            <div class="feature-title">Body clues</div>
+            <div class="feature-desc">Your body talks to you! Tight tummy, racing heart, wobbly legs — they're all clues about what's going on inside. Pick what you notice and the app figures out the rest!</div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon teal">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2a4.5 4.5 0 0 1 4.5 4.5v.5h.5a3.5 3.5 0 0 1 0 7H9a5 5 0 0 1-5-5 5 5 0 0 1 5-5v-.5A4.5 4.5 0 0 1 9.5 2z"/><path d="M14.5 14.5V17a2.5 2.5 0 0 1-5 0v-2.5"/></svg>
+            </div>
+            <div class="feature-title">Name that feeling!</div>
+            <div class="feature-desc">Feelings are like weather — they visit you, then move on. Once you know which one has arrived, it already starts to feel a bit smaller!</div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon purple">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </div>
+            <div class="feature-title">Your feelings map!</div>
+            <div class="feature-desc">See which feelings visit you most and which tools help them pass. Over time, you build up a whole picture — like a weather diary for your emotions!</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── Dashboard Teaser ───────────────────────────── -->
+  <section class="teaser-section">
+    <div class="container">
+      <div class="sec-label">Coming with launch</div>
+      <h2 class="sec-headline adult-only">Your emotional health, at a glance</h2>
+      <h2 class="sec-headline kids-only">Your feelings, all in one place!</h2>
+      <p class="sec-sub adult-only">A dashboard that tracks your emotional patterns, measures which tools help, and surfaces what you would otherwise miss — a health monitor for your inner life.</p>
+      <p class="sec-sub kids-only">See which feelings have visited and what helped them pass. It all goes on your map!</p>
+    </div>
+    <div class="container-wide">
+      <div class="teaser-wrap">
+        <div class="teaser-iframe-box">
+          <iframe src="dashboard.html" class="teaser-iframe" scrolling="no" tabindex="-1" title="Dashboard preview" loading="lazy"></iframe>
+        </div>
+        <div class="teaser-overlay">
+          <div class="teaser-cta">
+            <div class="teaser-cta-label adult-only">Full dashboard at launch</div>
+            <div class="teaser-cta-label kids-only">Coming soon!</div>
+            <div class="teaser-cta-sub adult-only">Track your patterns. Understand your triggers. Measure real progress.</div>
+            <div class="teaser-cta-sub kids-only">See all your feelings in one place and spot which tools work best for you!</div>
+            <a href="#ctaSection" class="teaser-cta-link">
+              <span class="adult-only-inline">Join the waitlist</span>
+              <span class="kids-only-inline">Get notified!</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Tools section ──────────────────────────────── -->
+  <section class="tools-section">
+    <div class="container">
+
+      <!-- Adult version -->
+      <div class="adult-only">
+        <div class="sec-label">The tools</div>
+        <h2 class="sec-headline">Real tools that actually work</h2>
+        <p class="sec-sub">Every intervention is drawn from established therapeutic research — matched to your emotion, not applied generically.</p>
+        <div class="tools-grid">
+          <div class="tool-card">
+            <div class="tool-card-icon" aria-hidden="true">🫁</div>
+            <div class="tool-card-title">Calm your body first</div>
+            <div class="tool-card-desc">Breathing and body-based tools work directly on the nervous system. Results are fast and measurable — useful when thinking straight isn't yet possible.</div>
+          </div>
+          <div class="tool-card">
+            <div class="tool-card-icon" aria-hidden="true">🧠</div>
+            <div class="tool-card-title">Then address the thinking</div>
+            <div class="tool-card-desc">Reframing, perspective-shifting, and values-based exercises help change the thought patterns that keep difficult emotions running long after they start.</div>
+          </div>
+          <div class="tool-card">
+            <div class="tool-card-icon" aria-hidden="true">📈</div>
+            <div class="tool-card-title">Then understand the pattern</div>
+            <div class="tool-card-desc">Tracking over time makes recurring patterns visible. Knowing why an emotion keeps showing up is the first step to changing it.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kids version -->
+      <div class="kids-only">
+        <div class="sec-label">Why it helps</div>
+        <h2 class="sec-headline">It actually works — here's why!</h2>
+        <p class="sec-sub">The tools in Emotional Taxonomy are based on real science — turned into fun, easy activities you can do anywhere!</p>
+        <div class="tools-grid">
+          <div class="tool-card">
+            <div class="tool-card-icon" aria-hidden="true">🫁</div>
+            <div class="tool-card-title">Breathing really works</div>
+            <div class="tool-card-desc">When feelings get too big, special breathing tricks calm your body down fast. Like a secret power you carry with you everywhere!</div>
+          </div>
+          <div class="tool-card">
+            <div class="tool-card-icon" aria-hidden="true">🔍</div>
+            <div class="tool-card-title">Naming it tames it</div>
+            <div class="tool-card-desc">When you can name a feeling exactly, it actually gets a bit smaller. That is real — and it works every time you try it!</div>
+          </div>
+          <div class="tool-card">
+            <div class="tool-card-icon" aria-hidden="true">💪</div>
+            <div class="tool-card-title">You can grow your skills</div>
+            <div class="tool-card-desc">Handling big feelings is a skill — like riding a bike! The more you practise, the better you get. This app helps you practise every day.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── Final CTA ──────────────────────────────────── -->
+  <section class="cta-section" id="ctaSection">
+    <div class="cta-inner">
+      <h2 class="cta-headline adult-only">Know yourself better. It starts here.</h2>
+      <h2 class="cta-headline kids-only">Be the first to try it!</h2>
+      <p class="cta-sub adult-only">Join the waitlist for early access to Emotional Taxonomy at launch.</p>
+      <p class="cta-sub kids-only">Pop in your email and you'll get a message the moment it is ready — so you and a grown-up can explore it first!</p>
+      <div class="email-form-2" id="ctaForm">
+        <label for="ctaEmail" class="visually-hidden">Email address</label>
+        <input id="ctaEmail" class="email-input-lg" type="email" placeholder="your@email.com" autocomplete="email">
+        <button class="btn-primary-lg" type="submit" onclick="submitForm('cta')">
+          <span class="adult-only-inline">Join the waitlist</span>
+          <span class="kids-only-inline">Let me know!</span>
+        </button>
+      </div>
+      <div class="cta-success" id="ctaSuccess">
+        <span class="adult-only-inline">You're on the list. One email at launch, nothing else.</span>
+        <span class="kids-only-inline">You're on the list! One email when it's ready!</span>
+      </div>
+      <p class="cta-hint adult-only">No spam. A single email at launch, nothing else.</p>
+      <p class="cta-hint kids-only">Ask a grown-up to help you sign up. No spam — just one message when it's ready!</p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-logo">
+      <img src="ET-new_1@4x.svg" alt="Emotional Taxonomy logo">
+      <div class="footer-name">Emotional Taxonomy</div>
+    </div>
+    <div class="footer-tagline">
+      <span class="adult-only-inline">Break the feeling down. Build yourself back up.</span>
+      <span class="kids-only-inline">Find the feeling. Find what helps!</span>
+    </div>
+    <div class="footer-url">emotional-taxonomy.com</div>
+  </footer>
+
+</main>
+
+<script>
+function submitForm(which) {
+  const isHero = which === 'hero';
+  const inputId   = isHero ? 'heroEmail'   : 'ctaEmail';
+  const formId    = isHero ? 'heroForm'    : 'ctaForm';
+  const successId = isHero ? 'heroSuccess' : 'ctaSuccess';
+  const input   = document.getElementById(inputId);
+  const form    = document.getElementById(formId);
+  const success = document.getElementById(successId);
+  const email   = input ? input.value.trim() : '';
+  // Validate
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    if (input) {
+      input.focus();
+      input.style.borderColor = 'rgba(255,107,107,0.6)';
+      setTimeout(() => { input.style.borderColor = ''; }, 2000);
+    }
+    return;
+  }
+  // Show success state
+  if (form)    form.style.display = 'none';
+  if (success) success.classList.add('visible');
+}
+
+function toggleMode() {
+  const isKids = document.body.classList.toggle('kids');
+  const tog   = document.getElementById('modeTog');
+  const label = document.getElementById('modeL');
+  tog.classList.toggle('kids', isKids);
+  label.textContent = isKids ? 'Kids' : 'Adult';
+  tog.setAttribute('aria-pressed', isKids ? 'true' : 'false');
+  // Shift orb palette for kids mode
+  const o1 = document.querySelector('.orb-1');
+  const o2 = document.querySelector('.orb-2');
+  const o3 = document.querySelector('.orb-3');
+  if (isKids) {
+    o1.style.background = 'linear-gradient(135deg,#F15BB5,#9B5DE5)';
+    o2.style.background = 'linear-gradient(135deg,#79c314,#4ECDC4)';
+    o3.style.background = 'linear-gradient(135deg,#FFB84A,#FF6B6B)';
+  } else {
+    o1.style.background = 'linear-gradient(135deg,#FF6B6B,#FF8E53)';
+    o2.style.background = 'linear-gradient(135deg,#4ECDC4,#44A3AA)';
+    o3.style.background = 'linear-gradient(135deg,#A78BFA,#8B5CF6)';
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en-NZ">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ET | Dashboard — Alex</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&display=swap" rel="stylesheet">
+  <style>
+:root {
+  --bg: #0a0a0f;
+  --bg2: #121218;
+  --card: rgba(255,255,255,0.05);
+  --card-h: rgba(255,255,255,0.08);
+  --text: #fff;
+  --text2: rgba(255,255,255,0.6);
+  --muted: rgba(255,255,255,0.5);
+  --border: rgba(255,255,255,0.08);
+  --font-d: 'Fraunces', serif;
+  --font-b: 'Outfit', sans-serif;
+  /* Intensity colours */
+  --c-mild: #4ECDC4;
+  --c-mod: #FFB84A;
+  --c-strong: #FF6B6B;
+  --c-none: rgba(255,255,255,0.06);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+body { font-family: var(--font-b); background: var(--bg); color: var(--text); line-height: 1.5; min-height: 100vh; overflow-x: hidden; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+button:focus-visible { outline: 2px solid rgba(184,157,255,0.8); outline-offset: 3px; border-radius: 14px; }
+.header-icon-btn:focus-visible,
+.back-btn:focus-visible,
+.period-btn:focus-visible { border-radius: 100px; }
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 2px; }
+
+@keyframes float { 0%,100% { transform: translate(0,0) scale(1); } 33% { transform: translate(20px,-20px) scale(1.05); } 66% { transform: translate(-15px,15px) scale(0.95); } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes scaleIn { from { transform: scale(0.96); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes drawLine { from { stroke-dashoffset: 1000; } to { stroke-dashoffset: 0; } }
+@keyframes fillRing { from { stroke-dashoffset: var(--ring-full); } to { stroke-dashoffset: var(--ring-offset); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .orb { animation: none; }
+  .dash-section { animation: none; }
+  .sparkline-path { animation: none !important; stroke-dashoffset: 0 !important; }
+  .ring-fill { transition: none; }
+  .emo-bar { transition: none; }
+}
+
+/* Orbs */
+.orbs { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+.orb { position: absolute; border-radius: 50%; filter: blur(120px); animation: float 25s ease-in-out infinite; }
+.orb-1 { width: 500px; height: 500px; top: -200px; left: -150px; background: linear-gradient(135deg,#5A189A,#7B2D8E); opacity: 0.15; }
+.orb-2 { width: 400px; height: 400px; bottom: -100px; right: -100px; background: linear-gradient(135deg,#0077B6,#4ECDC4); opacity: 0.12; animation-delay: -12s; }
+
+/* Header */
+.header { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; position: sticky; top: 0; z-index: 100; background: rgba(10,10,15,0.85); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); }
+.header-left { display: flex; align-items: center; gap: 14px; }
+.back-btn { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 0.8125rem; font-weight: 500; transition: color 0.15s; padding: 6px 0; }
+.back-btn:hover { color: var(--text); }
+.back-btn svg { width: 14px; height: 14px; }
+.header-divider { width: 1px; height: 20px; background: var(--border); }
+.user-info { display: flex; align-items: center; gap: 10px; }
+.avatar { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, #7B5BBF, #4ECDC4); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem; flex-shrink: 0; }
+.user-name { font-weight: 600; font-size: 0.9375rem; }
+.user-streak { display: flex; align-items: center; gap: 5px; font-size: 0.6875rem; color: var(--muted); margin-top: 1px; }
+.streak-dot { width: 5px; height: 5px; border-radius: 50%; background: #FFB84A; }
+.header-right { display: flex; align-items: center; gap: 10px; }
+.period-btn { display: flex; align-items: center; gap: 6px; padding: 6px 12px; background: var(--card); border: 1px solid var(--border); border-radius: 100px; font-size: 0.75rem; color: var(--text2); font-weight: 500; transition: background 0.15s; }
+.period-btn:hover { background: var(--card-h); }
+.period-btn svg { width: 12px; height: 12px; opacity: 0.5; }
+.header-icon-btn { width: 34px; height: 34px; border-radius: 50%; background: var(--card); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; transition: background 0.15s; }
+.header-icon-btn:hover { background: var(--card-h); }
+.header-icon-btn svg { width: 16px; height: 16px; color: var(--muted); }
+
+/* Page */
+.page { position: relative; z-index: 1; padding-bottom: 60px; }
+.container { max-width: 560px; margin: 0 auto; padding: 0 20px; }
+
+/* Section dividers */
+.dash-section { margin-top: 28px; animation: fadeUp 0.5s ease-out both; }
+.dash-section:nth-child(2) { animation-delay: 0.05s; }
+.dash-section:nth-child(3) { animation-delay: 0.1s; }
+.dash-section:nth-child(4) { animation-delay: 0.15s; }
+.dash-section:nth-child(5) { animation-delay: 0.2s; }
+.dash-section:nth-child(6) { animation-delay: 0.25s; }
+.dash-section:nth-child(7) { animation-delay: 0.3s; }
+.sec-label { font-size: 0.625rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; }
+
+/* Score rings */
+.rings-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.ring-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px 14px 16px; display: flex; flex-direction: column; align-items: center; text-align: center; transition: background 0.2s; }
+.ring-card:hover { background: var(--card-h); }
+.ring-wrap { position: relative; width: 80px; height: 80px; margin-bottom: 14px; }
+.ring-wrap svg { width: 80px; height: 80px; transform: rotate(-90deg); }
+.ring-track { fill: none; stroke: rgba(255,255,255,0.06); stroke-width: 6; }
+.ring-fill { fill: none; stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1); }
+.ring-label-inner { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.ring-score { font-family: var(--font-d); font-size: 1.375rem; font-weight: 700; line-height: 1; }
+.ring-unit { font-size: 0.5625rem; color: var(--muted); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.08em; }
+.ring-title { font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text2); margin-bottom: 4px; }
+.ring-sub { font-size: 0.625rem; color: var(--muted); line-height: 1.4; }
+
+/* Month summary strip */
+.month-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 16px; }
+.month-stat { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 14px; padding: 12px; text-align: center; }
+.month-stat-val { font-family: var(--font-d); font-size: 1.25rem; font-weight: 700; line-height: 1; margin-bottom: 4px; }
+.month-stat-label { font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); font-weight: 500; }
+
+/* Calendar */
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
+.cal-day-label { font-size: 0.5625rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); text-align: center; padding: 0 0 8px; font-weight: 600; }
+.cal-cell { aspect-ratio: 1; border-radius: 6px; position: relative; cursor: default; transition: transform 0.15s; display: flex; align-items: center; justify-content: center; }
+.cal-cell:hover { transform: scale(1.15); z-index: 2; }
+.cal-cell.today { outline: 2px solid rgba(255,255,255,0.4); outline-offset: 1px; border-radius: 6px; }
+.cal-date { font-size: 0.5rem; font-weight: 600; opacity: 0.5; position: absolute; top: 3px; left: 4px; }
+.cal-legend { display: flex; align-items: center; gap: 16px; margin-top: 14px; justify-content: flex-end; }
+.legend-item { display: flex; align-items: center; gap: 5px; }
+.legend-dot { width: 8px; height: 8px; border-radius: 2px; }
+.legend-label { font-size: 0.625rem; color: var(--muted); }
+
+/* Emotion breakdown */
+.emotion-bars { display: flex; flex-direction: column; gap: 10px; }
+.emo-row { display: flex; align-items: center; gap: 10px; }
+.emo-name { font-size: 0.8125rem; font-weight: 500; width: 90px; flex-shrink: 0; }
+.emo-bar-wrap { flex: 1; height: 8px; background: rgba(255,255,255,0.06); border-radius: 4px; overflow: hidden; }
+.emo-bar { height: 100%; border-radius: 4px; transition: width 1s cubic-bezier(0.4,0,0.2,1); }
+.emo-count { font-size: 0.75rem; color: var(--muted); width: 40px; text-align: right; flex-shrink: 0; }
+.emo-pct { font-size: 0.6875rem; color: var(--muted); width: 34px; text-align: right; flex-shrink: 0; }
+
+/* Sparkline */
+.sparkline-wrap { background: rgba(255,255,255,0.03); border-radius: 12px; padding: 16px; margin-top: 4px; position: relative; overflow: hidden; }
+.sparkline-wrap svg { width: 100%; display: block; overflow: visible; }
+.sparkline-grid-line { stroke: rgba(255,255,255,0.05); stroke-width: 1; }
+.sparkline-path { fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; animation: drawLine 1.5s ease-out both; stroke-dasharray: 1000; stroke-dashoffset: 0; }
+.sparkline-area { opacity: 0.08; }
+.sparkline-dot { transition: r 0.15s; cursor: default; }
+.sparkline-labels { display: flex; justify-content: space-between; margin-top: 8px; }
+.sparkline-label { font-size: 0.5625rem; color: var(--muted); }
+.intensity-legend { display: flex; gap: 14px; margin-top: 10px; }
+.int-badge { display: flex; align-items: center; gap: 5px; font-size: 0.625rem; color: var(--muted); }
+.int-badge-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+/* Weekly pattern */
+.weekly-grid { display: grid; grid-template-columns: 40px repeat(7, 1fr); gap: 4px; align-items: center; }
+.week-row-label { font-size: 0.5625rem; color: var(--muted); text-align: right; padding-right: 6px; font-weight: 500; }
+.week-day-header { font-size: 0.5625rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); text-align: center; padding-bottom: 4px; font-weight: 600; }
+.week-cell { aspect-ratio: 1; border-radius: 6px; transition: transform 0.15s; }
+.week-cell:hover { transform: scale(1.2); z-index: 2; position: relative; }
+.weekly-note { font-size: 0.75rem; color: var(--muted); margin-top: 12px; font-style: italic; }
+
+/* Insights */
+.insight-cards { display: flex; flex-direction: column; gap: 12px; }
+.insight-card { background: var(--card); border: 1px solid var(--border); border-left: 3px solid; border-radius: 14px; padding: 16px; display: flex; gap: 14px; transition: background 0.2s; }
+.insight-card:hover { background: var(--card-h); }
+.insight-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+.insight-body { flex: 1; min-width: 0; }
+.insight-title { font-weight: 600; font-size: 0.9375rem; margin-bottom: 4px; line-height: 1.3; }
+.insight-desc { font-size: 0.8125rem; color: var(--text2); line-height: 1.5; }
+
+/* Interventions */
+.intervention-list { display: flex; flex-direction: column; gap: 8px; }
+.int-row { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 14px; }
+.int-rank { font-family: var(--font-d); font-size: 1rem; font-weight: 700; color: var(--muted); width: 20px; flex-shrink: 0; }
+.int-icon-box { width: 34px; height: 34px; border-radius: 9px; background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+.int-info { flex: 1; min-width: 0; }
+.int-name { font-weight: 600; font-size: 0.875rem; }
+.int-meta { font-size: 0.6875rem; color: var(--muted); margin-top: 2px; }
+.int-bar-col { width: 80px; flex-shrink: 0; }
+.int-count { font-family: var(--font-d); font-size: 0.9375rem; font-weight: 700; text-align: right; margin-bottom: 4px; }
+.int-usage-bar { height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
+.int-usage-fill { height: 100%; border-radius: 2px; background: var(--c-mild); transition: width 1s ease-out; }
+
+/* Responsive */
+@media (max-width: 480px) {
+  .container { padding: 0 16px; }
+  .rings-row { gap: 8px; }
+  .ring-card { padding: 16px 10px 14px; }
+  .ring-wrap { width: 68px; height: 68px; }
+  .ring-wrap svg { width: 68px; height: 68px; }
+  .ring-score { font-size: 1.125rem; }
+  .month-strip { grid-template-columns: repeat(2, 1fr); }
+  .emo-name { width: 72px; font-size: 0.75rem; }
+}
+  </style>
+</head>
+<body>
+<div class="orbs" aria-hidden="true">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+</div>
+
+<header class="header">
+  <div class="header-left">
+    <button class="back-btn" onclick="window.location='index.html'" aria-label="Back to app">
+      <svg viewBox="0 0 16 16" fill="none"><path d="M10 4l-4 4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      App
+    </button>
+    <div class="header-divider"></div>
+    <div class="user-info">
+      <div class="avatar" aria-hidden="true">A</div>
+      <div>
+        <div class="user-name">Alex</div>
+        <div class="user-streak"><div class="streak-dot" aria-hidden="true"></div>5-day streak</div>
+      </div>
+    </div>
+  </div>
+  <div class="header-right">
+    <button class="period-btn" aria-label="Select time period: Last 30 days">
+      Last 30 days
+      <svg viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button class="header-icon-btn" aria-label="Settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v2m0 16v2M4.22 4.22l1.42 1.42m12.72 12.72 1.42 1.42M2 12h2m16 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+    </button>
+  </div>
+</header>
+
+<main class="page">
+  <div class="container">
+
+    <!-- Page title -->
+    <div style="padding-top:24px;margin-bottom:4px;animation:fadeUp 0.4s ease-out both">
+      <h1 style="font-family:var(--font-d);font-size:1.625rem;font-weight:700;letter-spacing:-0.02em;line-height:1.1">Your month in focus</h1>
+      <p style="font-size:0.875rem;color:var(--muted);margin-top:4px">27 Jan – 26 Feb 2026</p>
+    </div>
+
+    <!-- Score rings -->
+    <div class="dash-section">
+      <h2 class="sec-label">Key metrics</h2>
+      <div class="rings-row" id="ringsRow"></div>
+
+      <!-- Month summary strip -->
+      <div class="month-strip" id="monthStrip"></div>
+    </div>
+
+    <!-- Calendar heatmap -->
+    <div class="dash-section">
+      <h2 class="sec-label">Daily check-ins — intensity</h2>
+      <div class="card">
+        <div class="cal-grid" id="calGrid" role="grid" aria-label="30-day check-in calendar"></div>
+        <div class="cal-legend" aria-hidden="true">
+          <div class="legend-item"><div class="legend-dot" style="background:var(--c-none);border:1px solid var(--border)"></div><div class="legend-label">None</div></div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--c-mild)"></div><div class="legend-label">Mild</div></div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--c-mod)"></div><div class="legend-label">Moderate</div></div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--c-strong)"></div><div class="legend-label">Strong</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Emotion breakdown -->
+    <div class="dash-section">
+      <h2 class="sec-label">Emotion frequency</h2>
+      <div class="card">
+        <div class="emotion-bars" id="emoBars"></div>
+      </div>
+    </div>
+
+    <!-- Intensity sparkline -->
+    <div class="dash-section">
+      <h2 class="sec-label">Intensity over time</h2>
+      <div class="card">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px">
+          <div>
+            <div style="font-family:var(--font-d);font-size:1.5rem;font-weight:700;line-height:1;color:#4ECDC4" aria-label="Intensity decreased 28%">↓28%</div>
+            <div style="font-size:0.75rem;color:var(--muted);margin-top:3px">vs. first two weeks</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:0.75rem;color:var(--text2)">Avg this week</div>
+            <div style="font-family:var(--font-d);font-size:1.125rem;font-weight:700;color:var(--c-mild)">Mild</div>
+          </div>
+        </div>
+        <div class="sparkline-wrap">
+          <svg id="sparklineSvg" viewBox="0 0 500 80" preserveAspectRatio="none" height="80" role="img" aria-label="Intensity sparkline over 30 days showing a downward trend"></svg>
+        </div>
+        <div class="sparkline-labels" id="sparklineLabels" aria-hidden="true"></div>
+        <div class="intensity-legend" aria-hidden="true">
+          <div class="int-badge"><div class="int-badge-dot" style="background:var(--c-mild)"></div>Mild</div>
+          <div class="int-badge"><div class="int-badge-dot" style="background:var(--c-mod)"></div>Moderate</div>
+          <div class="int-badge"><div class="int-badge-dot" style="background:var(--c-strong)"></div>Strong</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Weekly pattern -->
+    <div class="dash-section">
+      <h2 class="sec-label">Day-of-week pattern</h2>
+      <div class="card">
+        <div class="weekly-grid" id="weeklyGrid" role="grid" aria-label="Weekly intensity pattern heatmap"></div>
+        <p class="weekly-note">Higher intensity early in the week — particularly Mondays.</p>
+      </div>
+    </div>
+
+    <!-- Insights -->
+    <div class="dash-section">
+      <h2 class="sec-label">Insights</h2>
+      <div class="insight-cards" id="insightCards"></div>
+    </div>
+
+    <!-- Interventions -->
+    <div class="dash-section">
+      <h2 class="sec-label">Most-used tools</h2>
+      <div class="card" id="interventionList"></div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// DUMMY DATA — 30 days (Jan 27 – Feb 26, 2026)
+// ═══════════════════════════════════════════════════════════
+const CHECKINS = [
+  // Jan 27-31 (higher intensity early period)
+  { date:'Jan 27', day:0,  emotion:'anxiety',     intensity:3, interventions:['Box Breathing','4-7-8 Breathing'] },
+  { date:'Jan 28', day:1,  emotion:'frustration', intensity:3, interventions:['Muscle Release','Cognitive Reframing'] },
+  { date:'Jan 29', day:2,  emotion:null,           intensity:0, interventions:[] },
+  { date:'Jan 30', day:3,  emotion:'anxiety',      intensity:3, interventions:['5-4-3-2-1 Grounding','Box Breathing'] },
+  { date:'Jan 31', day:4,  emotion:'sadness',      intensity:2, interventions:['Self-Compassion Break'] },
+  // Feb 1-7
+  { date:'Feb 1',  day:5,  emotion:'anxiety',      intensity:2, interventions:['4-7-8 Breathing'] },
+  { date:'Feb 2',  day:6,  emotion:'loneliness',   intensity:1, interventions:['Tiny Step Forward'] },
+  { date:'Feb 3',  day:7,  emotion:'frustration',  intensity:2, interventions:['Muscle Release'] },
+  { date:'Feb 4',  day:8,  emotion:null,            intensity:0, interventions:[] },
+  { date:'Feb 5',  day:9,  emotion:'anger',         intensity:3, interventions:['Box Breathing','TIPP Crisis Reset'] },
+  { date:'Feb 6',  day:10, emotion:'anxiety',       intensity:2, interventions:['5-4-3-2-1 Grounding'] },
+  { date:'Feb 7',  day:11, emotion:'frustration',   intensity:3, interventions:['Cognitive Reframing'] },
+  // Feb 8-14 (mid period, grief spike)
+  { date:'Feb 8',  day:12, emotion:'sadness',       intensity:1, interventions:['Self-Compassion Break'] },
+  { date:'Feb 9',  day:13, emotion:null,            intensity:0, interventions:[] },
+  { date:'Feb 10', day:14, emotion:'anxiety',       intensity:2, interventions:['4-7-8 Breathing'] },
+  { date:'Feb 11', day:15, emotion:'grief',         intensity:3, interventions:['Self-Compassion Break','Values Compass'] },
+  { date:'Feb 12', day:16, emotion:'frustration',   intensity:2, interventions:['Muscle Release'] },
+  { date:'Feb 13', day:17, emotion:'anxiety',       intensity:1, interventions:['Box Breathing'] },
+  { date:'Feb 14', day:18, emotion:'loneliness',    intensity:2, interventions:['Tiny Step Forward'] },
+  // Feb 15-21 (intensity plateauing / improving)
+  { date:'Feb 15', day:19, emotion:'anger',         intensity:2, interventions:['TIPP Crisis Reset'] },
+  { date:'Feb 16', day:20, emotion:null,            intensity:0, interventions:[] },
+  { date:'Feb 17', day:21, emotion:'anxiety',       intensity:1, interventions:['Physiological Sigh'] },
+  { date:'Feb 18', day:22, emotion:'sadness',       intensity:2, interventions:['Self-Compassion Break'] },
+  { date:'Feb 19', day:23, emotion:'frustration',   intensity:1, interventions:['Cognitive Reframing'] },
+  { date:'Feb 20', day:24, emotion:'anxiety',       intensity:1, interventions:['5-4-3-2-1 Grounding'] },
+  { date:'Feb 21', day:25, emotion:'shame',         intensity:2, interventions:['Self-Compassion Break','Cognitive Reframing'] },
+  // Feb 22-26 (clear improvement, mostly mild)
+  { date:'Feb 22', day:26, emotion:null,            intensity:0, interventions:[] },
+  { date:'Feb 23', day:27, emotion:'anxiety',       intensity:1, interventions:['Physiological Sigh'] },
+  { date:'Feb 24', day:28, emotion:'frustration',   intensity:1, interventions:['Cognitive Reframing'] },
+  { date:'Feb 25', day:29, emotion:'sadness',       intensity:1, interventions:['Pleasant Events Scheduling'] },
+  // Feb 26 = today (index 30, rendered separately)
+  { date:'Feb 26', day:30, emotion:'anxiety',       intensity:1, interventions:['4-7-8 Breathing'] },
+];
+
+// ═══════════════════════════════════════════════════════════
+// DERIVED STATS — computed from CHECKINS array
+// ═══════════════════════════════════════════════════════════
+const checkedIn = CHECKINS.filter(c => c.emotion !== null);
+const totalCheckIns = checkedIn.length; // 26
+const missedDays = CHECKINS.length - totalCheckIns; // 5
+const uniqueEmotions = new Set(checkedIn.map(c => c.emotion)).size; // 7
+
+// Intervention counts derived from CHECKINS
+const interventionCounts = {};
+CHECKINS.forEach(c => {
+  c.interventions.forEach(name => {
+    interventionCounts[name] = (interventionCounts[name] || 0) + 1;
+  });
+});
+const sortedInterventions = Object.entries(interventionCounts)
+  .sort((a, b) => b[1] - a[1])
+  .slice(0, 6);
+
+// Emotion colours (from EMOTIONS database)
+const EMO_COLOURS = {
+  anxiety:     '#5A189A',
+  frustration: '#E85D04',
+  sadness:     '#0077B6',
+  anger:       '#D62828',
+  loneliness:  '#6C757D',
+  grief:       '#023E8A',
+  shame:       '#4A4E69',
+};
+const INTENSITY_COLOURS = ['transparent', '#4ECDC4', '#FFB84A', '#FF6B6B'];
+const INTENSITY_ALPHA   = [0, 0.45, 0.55, 0.7];
+
+// Tool type metadata (all 32 tools)
+const TOOL_META = {
+  // Original 14
+  'Box Breathing':                { icon: '⬜', type: 'Quick Relief' },
+  '4-7-8 Breathing':              { icon: '🌙', type: 'Quick Relief' },
+  '5-4-3-2-1 Grounding':         { icon: '⚓', type: 'Quick Relief' },
+  'Muscle Release':               { icon: '💪', type: 'Quick Relief' },
+  'TIPP Crisis Reset':            { icon: '❄️', type: 'Quick Relief' },
+  'Self-Compassion Break':        { icon: '💙', type: 'Quick Relief' },
+  'Share the Feeling':            { icon: '💬', type: 'Quick Relief' },
+  'Savoring Practice':            { icon: '🌸', type: 'Deeper Work' },
+  'Gratitude Moment':             { icon: '💛', type: 'Deeper Work' },
+  'Cognitive Reframing':          { icon: '🔍', type: 'Deeper Work' },
+  'Opposite Action':              { icon: '⇄',  type: 'Deeper Work' },
+  'Thought Defusion':             { icon: '🫧', type: 'Deeper Work' },
+  'Values Compass':               { icon: '🧭', type: 'Deeper Work' },
+  'Tiny Step Forward':            { icon: '👣', type: 'Deeper Work' },
+  // New quick (8)
+  'Physiological Sigh':           { icon: '💨', type: 'Quick Relief' },
+  'STOP Practice':                { icon: '🛑', type: 'Quick Relief' },
+  'Belly Breathing':              { icon: '🫁', type: 'Quick Relief' },
+  'Half-Smile & Willing Hands':   { icon: '😌', type: 'Quick Relief' },
+  '5-Finger Breathing':           { icon: '✋', type: 'Quick Relief' },
+  'Emotion Labelling':            { icon: '📌', type: 'Quick Relief' },
+  'Urge Surfing':                 { icon: '🌊', type: 'Quick Relief' },
+  'Self-Distancing':              { icon: '🔭', type: 'Quick Relief' },
+  // New deep (10)
+  'Body Scan':                    { icon: '🧘', type: 'Deeper Work' },
+  'Loving-Kindness':              { icon: '💗', type: 'Deeper Work' },
+  'RAIN Practice':                { icon: '🌧️', type: 'Deeper Work' },
+  'Safe Place Visualisation':     { icon: '🏡', type: 'Deeper Work' },
+  'Compassionate Letter':         { icon: '📝', type: 'Deeper Work' },
+  'Expressive Writing':           { icon: '📓', type: 'Deeper Work' },
+  'Worry Window':                 { icon: '🕐', type: 'Deeper Work' },
+  'Pleasant Events Scheduling':   { icon: '📅', type: 'Deeper Work' },
+  'Thought Record':               { icon: '📋', type: 'Deeper Work' },
+  'Mountain Meditation':          { icon: '⛰️', type: 'Deeper Work' },
+};
+
+// ═══════════════════════════════════════════════════════════
+// SCORE RINGS
+// ═══════════════════════════════════════════════════════════
+
+// Regulation rate: sessions with at least one intervention / total emotional check-ins
+const totalInterventions = CHECKINS.reduce((s,c) => s + c.interventions.length, 0);
+const sessionsWithTools = checkedIn.filter(c => c.interventions.length > 0).length;
+const regulationPct = Math.round((sessionsWithTools / totalCheckIns) * 100);
+// Intensity trend
+const earlyCheckins = CHECKINS.slice(0, 14).filter(c => c.intensity > 0);
+const lateCheckins  = CHECKINS.slice(14).filter(c => c.intensity > 0);
+const earlyAvg = earlyCheckins.reduce((s,c) => s + c.intensity, 0) / earlyCheckins.length;
+const lateAvg  = lateCheckins.reduce((s,c) => s + c.intensity, 0) / lateCheckins.length;
+const intensityDrop = Math.round(((earlyAvg - lateAvg) / earlyAvg) * 100);
+
+const RINGS = [
+  { score: 82, label: 'Clarity', sublabel: 'Self-awareness', color: '#4ECDC4', unit: '/100', pct: 0.82 },
+  { score: Math.min(regulationPct, 99), label: 'Regulation', sublabel: `${totalInterventions} tool uses across ${totalCheckIns} sessions`, color: '#B89DFF', unit: '%', pct: Math.min(regulationPct, 99) / 100 },
+  { score: intensityDrop, label: 'Improvement', sublabel: 'Intensity ↓ vs start', color: '#FFB84A', unit: '%↓', pct: intensityDrop / 100 },
+];
+
+function buildRings() {
+  const container = document.getElementById('ringsRow');
+  const R = 32, CX = 40, CY = 40, CIRC = 2 * Math.PI * R;
+  RINGS.forEach(r => {
+    const pct = Math.min(r.pct, 0.99);
+    const offset = CIRC - (pct * CIRC);
+    container.innerHTML += `
+    <div class="ring-card" role="figure" aria-label="${r.label}: ${r.score}${r.unit}">
+      <div class="ring-wrap">
+        <svg viewBox="0 0 80 80" aria-hidden="true">
+          <circle class="ring-track" cx="${CX}" cy="${CY}" r="${R}" />
+          <circle class="ring-fill" cx="${CX}" cy="${CY}" r="${R}"
+            stroke="${r.color}"
+            stroke-dasharray="${CIRC.toFixed(1)}"
+            stroke-dashoffset="${offset.toFixed(1)}"
+          />
+        </svg>
+        <div class="ring-label-inner" aria-hidden="true">
+          <div class="ring-score" style="color:${r.color}">${r.score}</div>
+          <div class="ring-unit">${r.unit}</div>
+        </div>
+      </div>
+      <div class="ring-title">${r.label}</div>
+      <div class="ring-sub">${r.sublabel}</div>
+    </div>`;
+  });
+}
+
+function buildMonthStrip() {
+  const container = document.getElementById('monthStrip');
+  container.innerHTML = `
+    <div class="month-stat">
+      <div class="month-stat-val" style="color:#4ECDC4">${totalCheckIns}</div>
+      <div class="month-stat-label">Check-ins</div>
+    </div>
+    <div class="month-stat">
+      <div class="month-stat-val" style="color:#B89DFF">5</div>
+      <div class="month-stat-label">Day streak</div>
+    </div>
+    <div class="month-stat">
+      <div class="month-stat-val" style="color:#FFB84A">${missedDays}</div>
+      <div class="month-stat-label">Days missed</div>
+    </div>
+    <div class="month-stat">
+      <div class="month-stat-val" style="color:#FF6B6B">${uniqueEmotions}</div>
+      <div class="month-stat-label">Emotions found</div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// CALENDAR HEATMAP
+// ═══════════════════════════════════════════════════════════
+function buildCalendar() {
+  const grid = document.getElementById('calGrid');
+  // Two-char abbreviations that are visually unambiguous (Th≠Tu, Sa≠Su)
+  const days = [
+    {abbr:'Mo', full:'Monday'},
+    {abbr:'Tu', full:'Tuesday'},
+    {abbr:'We', full:'Wednesday'},
+    {abbr:'Th', full:'Thursday'},
+    {abbr:'Fr', full:'Friday'},
+    {abbr:'Sa', full:'Saturday'},
+    {abbr:'Su', full:'Sunday'},
+  ];
+  // Day labels
+  days.forEach(d => {
+    grid.innerHTML += `<div class="cal-day-label" role="columnheader" aria-label="${d.full}">${d.abbr}</div>`;
+  });
+  // Jan 27 is a Monday (index 0 in week), so no offset needed
+  CHECKINS.forEach((c, i) => {
+    const isToday = i === 30;
+    const bg = c.intensity === 0
+      ? 'rgba(255,255,255,0.05)'
+      : `rgba(${intensityRgb(c.intensity)},${INTENSITY_ALPHA[c.intensity]})`;
+    const label = c.emotion ? `${c.date}: ${c.emotion} (${intensityLabel(c.intensity)})` : `${c.date}: no check-in`;
+    grid.innerHTML += `<div class="cal-cell${isToday?' today':''}" style="background:${bg}" role="gridcell" aria-label="${label}">
+      <div class="cal-date" aria-hidden="true">${c.date.replace(/\w+ /,'')}</div>
+    </div>`;
+  });
+}
+
+function intensityRgb(v) {
+  if(v===1) return '78,205,196';
+  if(v===2) return '255,184,74';
+  if(v===3) return '255,107,107';
+  return '255,255,255';
+}
+function intensityLabel(v) { return ['none','mild','moderate','strong'][v]; }
+
+// ═══════════════════════════════════════════════════════════
+// EMOTION BARS
+// ═══════════════════════════════════════════════════════════
+function buildEmoBars() {
+  const container = document.getElementById('emoBars');
+  const counts = {};
+  CHECKINS.forEach(c => { if(c.emotion) counts[c.emotion] = (counts[c.emotion]||0)+1; });
+  const total = CHECKINS.filter(c=>c.emotion).length;
+  const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+  const max = sorted[0][1];
+  sorted.forEach(([emo, count]) => {
+    const pct = Math.round((count/total)*100);
+    const barW = Math.round((count/max)*100);
+    const col = EMO_COLOURS[emo] || '#7B5BBF';
+    container.innerHTML += `
+    <div class="emo-row">
+      <div class="emo-name" style="text-transform:capitalize">${emo}</div>
+      <div class="emo-bar-wrap" role="progressbar" aria-valuenow="${barW}" aria-valuemin="0" aria-valuemax="100" aria-label="${emo}: ${count} check-ins, ${pct}%">
+        <div class="emo-bar" style="width:${barW}%;background:${col}"></div>
+      </div>
+      <div class="emo-count" aria-hidden="true">${count}×</div>
+      <div class="emo-pct" aria-hidden="true">${pct}%</div>
+    </div>`;
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// SPARKLINE
+// ═══════════════════════════════════════════════════════════
+function buildSparkline() {
+  const svg = document.getElementById('sparklineSvg');
+  const labels = document.getElementById('sparklineLabels');
+  const W = 500, H = 80, PAD = 8;
+  const points = CHECKINS.map((c,i) => ({
+    x: PAD + (i / (CHECKINS.length-1)) * (W - PAD*2),
+    y: H - PAD - ((c.intensity / 3) * (H - PAD*2)),
+    v: c.intensity,
+    date: c.date,
+  }));
+
+  // Grid lines
+  [1,2,3].forEach(v => {
+    const y = H - PAD - ((v/3)*(H-PAD*2));
+    svg.innerHTML += `<line x1="${PAD}" y1="${y}" x2="${W-PAD}" y2="${y}" class="sparkline-grid-line"/>`;
+  });
+
+  // Trend area
+  const areaPath = points.map((p,i) => `${i===0?'M':'L'}${p.x},${p.y}`).join(' ') + ` L${points[points.length-1].x},${H} L${points[0].x},${H} Z`;
+  svg.innerHTML += `<path d="${areaPath}" class="sparkline-area" fill="#4ECDC4"/>`;
+
+  // Line path
+  const linePath = points.map((p,i) => `${i===0?'M':'L'}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+  svg.innerHTML += `<path d="${linePath}" class="sparkline-path" stroke="#4ECDC4" stroke-dasharray="1000" stroke-dashoffset="1000" style="animation:drawLine 1.6s 0.3s cubic-bezier(0.4,0,0.2,1) forwards"/>`;
+
+  // Dots
+  points.forEach(p => {
+    if(p.v===0) return;
+    const col = INTENSITY_COLOURS[p.v];
+    svg.innerHTML += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3" fill="${col}" class="sparkline-dot"><title>${p.date}: ${intensityLabel(p.v)}</title></circle>`;
+  });
+
+  // Labels (show week starts)
+  ['Jan 27','Feb 3','Feb 10','Feb 17','Feb 24','Feb 26'].forEach(d => {
+    labels.innerHTML += `<div class="sparkline-label">${d}</div>`;
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// WEEKLY PATTERN HEATMAP
+// ═══════════════════════════════════════════════════════════
+function buildWeeklyPattern() {
+  const grid = document.getElementById('weeklyGrid');
+  const dayNames = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+
+  // Build weekly matrix from checkins (5 weeks: Jan27=Mon, Feb2=Sun, etc.)
+  const weeks = [
+    CHECKINS.slice(0,7),   // Jan27-Feb2
+    CHECKINS.slice(7,14),  // Feb3-9
+    CHECKINS.slice(14,21), // Feb10-16
+    CHECKINS.slice(21,28), // Feb17-23
+    [...CHECKINS.slice(28), {intensity:0},{intensity:0},{intensity:0},{intensity:0}], // Feb24-26 padded
+  ];
+  const weekLabels = ['Wk 1','Wk 2','Wk 3','Wk 4','Wk 5'];
+
+  // Header row
+  grid.innerHTML += `<div></div>`;
+  dayNames.forEach(d => { grid.innerHTML += `<div class="week-day-header" role="columnheader">${d}</div>`; });
+
+  weeks.forEach((week, wi) => {
+    grid.innerHTML += `<div class="week-row-label">${weekLabels[wi]}</div>`;
+    for(let d=0; d<7; d++) {
+      const entry = week[d] || {intensity:0};
+      const bg = entry.intensity === 0
+        ? 'rgba(255,255,255,0.03)'
+        : `rgba(${intensityRgb(entry.intensity)},${INTENSITY_ALPHA[entry.intensity]})`;
+      const label = entry.date ? `${entry.date}: ${intensityLabel(entry.intensity)}` : intensityLabel(entry.intensity);
+      grid.innerHTML += `<div class="week-cell" style="background:${bg}" role="gridcell" aria-label="${label}"></div>`;
+    }
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// INSIGHT CARDS — derived from data
+// ═══════════════════════════════════════════════════════════
+function buildInsights() {
+  const container = document.getElementById('insightCards');
+
+  // Compute anxiety percentage
+  const anxietyCount = CHECKINS.filter(c => c.emotion === 'anxiety').length;
+  const anxietyPct = Math.round((anxietyCount / CHECKINS.length) * 100);
+
+  // Top tool (data-driven)
+  const topTool = sortedInterventions[0] || ['Box Breathing', 1];
+  const topToolMeta = TOOL_META[topTool[0]] || { icon: '🧰', type: 'Quick Relief' };
+
+  const INSIGHTS = [
+    {
+      icon: '📈',
+      color: '#4ECDC4',
+      bg: 'rgba(78,205,196,0.08)',
+      title: `Your intensity has decreased ${intensityDrop}% this month.`,
+      desc: `Average intensity dropped from ${earlyAvg.toFixed(1)} to ${lateAvg.toFixed(1)} over 30 days. Consistent check-ins and completed interventions are correlated with this improvement.`,
+    },
+    {
+      icon: '🧠',
+      color: '#B89DFF',
+      bg: 'rgba(184,157,255,0.08)',
+      title: `Anxiety accounts for ${anxietyPct}% of all check-ins.`,
+      desc: 'It tends to peak early in the week. Consider a Sunday evening wind-down ritual to reduce Monday carry-over.',
+    },
+    {
+      icon: topToolMeta.icon,
+      color: '#FFB84A',
+      bg: 'rgba(255,184,74,0.08)',
+      title: `${topTool[0]} is your most-used strategy.`,
+      desc: `Used ${topTool[1]} time${topTool[1] !== 1 ? 's' : ''} across your check-ins. When something hits, this is your consistent go-to — a strong signal it works for you.`,
+    },
+    {
+      icon: '✓',
+      color: '#4ECDC4',
+      bg: 'rgba(78,205,196,0.05)',
+      title: `You checked in ${totalCheckIns} of the last 30 days.`,
+      desc: `That ${Math.round((totalCheckIns/30)*100)}% consistency rate is the foundation everything else builds on. Self-awareness precedes regulation.`,
+    },
+  ];
+
+  INSIGHTS.forEach(ins => {
+    container.innerHTML += `
+    <div class="insight-card" style="border-left-color:${ins.color}">
+      <div class="insight-icon" style="background:${ins.bg};color:${ins.color}" aria-hidden="true">${ins.icon}</div>
+      <div class="insight-body">
+        <div class="insight-title">${ins.title}</div>
+        <div class="insight-desc">${ins.desc}</div>
+      </div>
+    </div>`;
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// INTERVENTIONS — derived from CHECKINS
+// ═══════════════════════════════════════════════════════════
+function buildInterventions() {
+  const container = document.getElementById('interventionList');
+  container.innerHTML = '<div class="intervention-list" id="intListInner"></div>';
+  const inner = document.getElementById('intListInner');
+  const max = sortedInterventions[0] ? sortedInterventions[0][1] : 1;
+  sortedInterventions.forEach(([name, count], i) => {
+    const barW = Math.round((count / max) * 100);
+    const meta = TOOL_META[name] || { icon: '🔧', type: 'Tool' };
+    inner.innerHTML += `
+    <div class="int-row">
+      <div class="int-rank" aria-hidden="true">${i+1}</div>
+      <div class="int-icon-box" aria-hidden="true">${meta.icon}</div>
+      <div class="int-info">
+        <div class="int-name">${name}</div>
+        <div class="int-meta">${meta.type}</div>
+      </div>
+      <div class="int-bar-col">
+        <div class="int-count" style="color:var(--c-mild)" aria-label="${count} uses">${count}×</div>
+        <div class="int-usage-bar" role="progressbar" aria-valuenow="${barW}" aria-valuemin="0" aria-valuemax="100" aria-label="${name}: ${count} uses">
+          <div class="int-usage-fill" style="width:${barW}%"></div>
+        </div>
+      </div>
+    </div>`;
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  buildRings();
+  buildMonthStrip();
+  buildCalendar();
+  buildEmoBars();
+  buildSparkline();
+  buildWeeklyPattern();
+  buildInsights();
+  buildInterventions();
+
+  // Animate sparkline after render
+  setTimeout(() => {
+    const path = document.querySelector('.sparkline-path');
+    if(path) {
+      path.style.strokeDashoffset = '0';
+    }
+  }, 400);
+});
+</script>
+</body>
+</html>
